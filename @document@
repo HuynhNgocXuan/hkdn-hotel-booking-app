@@ -1,0 +1,27 @@
+1. Đánh giá và phân loại hiện trạng
+1.1. Đánh giá danh mục dự án
+Trước tiên, thực hiện audit toàn bộ dự án đang “treo” để thu thập thông tin về mục tiêu, chi phí ước tính, tiến độ và rủi ro 
+Phân tích giá trị kinh doanh và độ ưu tiên hiện tại để tách nhóm dự án: “Triển khai ngay”, “Chờ điều kiện” và “Đề xuất hủy hoặc đóng băng” 
+2. Thiết lập quản trị dự án (Project Governance)
+2.1. Lập PMO
+Thành lập Văn phòng Quản lý Dự án (PMO) với vai trò điều phối, chuẩn hóa quy trình và phân bổ nguồn lực tập trung 
+2.2. Quy trình phê duyệt và ưu tiên
+Xây dựng quy trình nhập yêu cầu (intake process) với biểu mẫu chuẩn, yêu cầu thông tin đầy đủ trước khi review 
+Áp dụng ma trận ưu tiên (scoring model) dựa trên các tiêu chí: giá trị doanh thu, rủi ro, hiệu quả chi phí và khả năng thực thi 
+2.3. Quy trình hủy dự án
+Định nghĩa trước kill criteria (ví dụ: không đạt ROI ≥ 20% trong 6 tháng, trượt deadline hơn 25%) để kịp thời hủy hoặc dừng tài trợ 
+3. Quản lý danh mục dự án (Project Portfolio Management)
+Áp dụng Strategic Portfolio Management (SPM) nhằm liên kết danh mục dự án với mục tiêu chiến lược, đảm bảo phân bổ nguồn lực tối ưu và khả năng thích ứng trước thay đổi thị trường 
+Sử dụng công cụ PPM để theo dõi tiến độ, chi phí, ROI và đánh giá hiệu quả đầu tư của từng dự án một cách minh bạch 
+4. Phương pháp triển khai linh hoạt (Agile và DevOps)
+Chuyển đổi mô hình phát triển sang Agile với các nhóm cross‑functional, sprint ngắn và review định kỳ để rút ngắn time‑to‑market 
+Kết hợp DevOps, tự động hóa CI/CD, đảm bảo triển khai liên tục, giảm thiểu lỗi và tăng tính ổn định của hệ thống 
+5. Quản lý nhu cầu và liên kết chiến lược
+Triển khai Demand Management theo ITIL để dự báo và điều tiết nhu cầu dịch vụ, đảm bảo năng lực CNTT đáp ứng kịp thời các yêu cầu của doanh nghiệp 
+Liên kết các sáng kiến CNTT với mục tiêu kinh doanh thông qua chỉ số KPI định kỳ (ví dụ: % tăng doanh thu trực tuyến, độ hài lòng người dùng) 
+6. Đào tạo và thay đổi văn hóa
+Cung cấp đào tạo về quản lý thay đổi (change management) theo phương pháp Prosci để nâng cao kỹ năng và cam kết của nhân sự 
+Xây dựng văn hóa cải tiến liên tục, khuyến khích feedback hai chiều và tổ chức các buổi lessons learned sau mỗi giai đoạn dự án 
+7. Giám sát và cải tiến liên tục
+Thiết lập dashboard giám sát tiến độ, chi phí, chất lượng và ROI trên công cụ PPM, review định kỳ hàng tháng/quý để điều chỉnh kịp thời 
+Áp dụng các buổi retrospective và lesson learned để học hỏi từ kinh nghiệm trước, liên tục tối ưu hóa quy trình và công cụ 
