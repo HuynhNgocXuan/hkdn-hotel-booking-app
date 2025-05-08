@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import SearchInput from "../SearchInput";
+import { ModeToggle } from "../theme-toggle";
+import { NavMenu } from "./NavMenu";
 
 const NavBar = () => {
   const router = useRouter();
@@ -22,11 +24,14 @@ const NavBar = () => {
             <div className="text-lg font-bold">BOOKING HOTEL</div>
           </div>
 
-          <SearchInput/>
+          <SearchInput />
 
-          <div className="flex gap-2 items-center">
-            <div>theme</div>
+          <div className="flex gap-4 items-center">
+            <div>
+              <ModeToggle />
+            </div>
             <UserButton />
+              <NavMenu />
             {!userId && (
               <>
                 <Button
