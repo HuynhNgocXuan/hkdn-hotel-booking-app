@@ -34,10 +34,12 @@ model Hotel {
   swimmingPool        Boolean   @default(false)
   coffeeShop          Boolean   @default(false)
   addedAt             DateTime  @default(now())
-  updatedAT           DateTime  @default(now())
 
-  Room               Room[]
-  Booking            Booking[]
+  updatedAt           DateTime  @default(now())
+
+  rooms               Room[]
+  bookings            Booking[]
+
 
   @@fulltext([title])
 }
