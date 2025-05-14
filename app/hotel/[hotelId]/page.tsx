@@ -22,3 +22,4 @@ const Hotel = async ({ params }: HotelPageProps) => {
 };
 
 export default Hotel;
+
