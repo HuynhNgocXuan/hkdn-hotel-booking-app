@@ -4,6 +4,18 @@ import { Hotel, Room } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { Checkbox } from "../ui/checkbox";
 interface AddHotelFormProps {
   hotel: HotelWithRooms | null;
 }
@@ -44,6 +56,35 @@ const formSchema = z.object({
   coffeeShop: z.boolean().optional(),
 });
 
+const items = [
+  {
+    input: [
+      { name: "title", label: "Title", placeholder: "Name your hotel" },
+      {
+        name: "description",
+        label: "Description",
+        placeholder: "Describe your hotel",
+      },
+    ],
+  },
+  {
+    checkbox: [
+      { name: "gym", label: "Gym" },
+      { name: "spa", label: "Spa" },
+      { name: "bar", label: "Bar" },
+      { name: "laundry", label: "Laundry" },
+      { name: "restaurant", label: "Restaurant" },
+      { name: "shopping", label: "Shopping" },
+      { name: "freeParking", label: "Free Parking" },
+      { name: "bikeRental", label: "Bike Rental" },
+      { name: "freeWifi", label: "Free Wi-Fi" },
+      { name: "movieNights", label: "Movie Nights" },
+      { name: "swimmingPool", label: "Swimming Pool" },
+      { name: "coffeeShop", label: "Coffee Shop" },
+    ],
+  },
+];
+
 const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -73,7 +114,73 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
   }
-  return <div>Add</div>;
+  return (
+    <div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <h2 className="text-xl text-center font-semibold">
+            {hotel ? "Update your hotel" : "Describe Your Hotel"}
+          </h2>
+
+          <div className="flex flex-col md:flex-row gap-6">
+            <div className="flex flex-1 flex-col gap-6">
+              {items[0].input?.map((item) => (
+                <FormField
+                  key={item.name}
+                  control={form.control}
+                  name={item.name as "title" | "description"}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{item.label}</FormLabel>
+                      <FormControl>
+                        {item.name === "title" ? (
+                          <Input placeholder={item.placeholder} {...field} />
+                        ) : (
+                          <Textarea placeholder={item.placeholder} {...field} />
+                        )}
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
+
+              <div>
+                <FormLabel>Choose Amenities</FormLabel>
+                <FormDescription>
+                  Select the amenities you want to include in your hotel.
+                </FormDescription>
+
+                <div className="grid grid-cols-3 gap-4 mt-4">
+                  {items[1].checkbox?.map((item) => (
+                    <FormField
+                      key={item.name}
+                      control={form.control}
+                      name={item.name as keyof z.infer<typeof formSchema>}
+                      render={({ field }) => (
+                        <FormItem className="flex items-center border rounded-md p-4">
+                          <FormControl>
+                            <Checkbox
+                              className="border-2 border-gray-400"
+                              checked={field.value as boolean}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormLabel>{item.label}</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-1 flex-col gap-6">part 2</div>
+          </div>
+        </form>
+      </Form>
+    </div>
+  );
 };
 
 export default AddHotelForm;
