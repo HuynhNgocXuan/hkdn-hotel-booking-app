@@ -16,6 +16,13 @@ import {
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Checkbox } from "../ui/checkbox";
+import { useState } from "react";
+import { UploadButton } from "../uploadthing";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
+import { Loader2, XCircle } from "lucide-react";
+import axios from "axios";
+
 interface AddHotelFormProps {
   hotel: HotelWithRooms | null;
 }
@@ -86,6 +93,9 @@ const items = [
 ];
 
 const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
+  const [image, setImage] = useState<string | undefined>(hotel?.image);
+  const [imageIsDeleting, setImageIsDeleting] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -110,6 +120,25 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
       coffeeShop: false,
     },
   });
+
+  const handleImageDelete = (image: string) => {
+    setImageIsDeleting(true);
+    const imageKey = image.substring(image.lastIndexOf("/") + 1);
+    axios
+      .post("/api/uploadthing/delete", { imageKey })
+      .then((res) => {
+        if (res.data.success) {
+          setImage("");
+          toast.success("Image deleted successfully");
+        }
+      })
+      .catch(() => {
+        toast.error("Error deleting image");
+      })
+      .finally(() => {
+        setImageIsDeleting(false);
+      });
+  };
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
@@ -173,6 +202,58 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                   ))}
                 </div>
               </div>
+
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Upload an Image *</FormLabel>
+                    <FormDescription>
+                      Choose an image for your hotel.
+                    </FormDescription>
+                    <FormControl>
+                      {image ? (
+                        <>
+                          <div className="relative max-w-[400px] min-w-[200px] max-h-[400px] min-h-[200px] mt-4">
+                            <img
+                              src={image}
+                              alt="Hotel Image"
+                              className="object-contain"
+                            />
+
+                            <Button
+                              className="absolute right-[-42px] top-0"
+                              onClick={() => handleImageDelete(image)}
+                              size="icon"
+                              type="button"
+                              variant="ghost"
+                            >
+                              {imageIsDeleting ? <Loader2 /> : <XCircle />}
+                            </Button>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="flex flex-col max-w-[400px] p-12 border-2 items-center rounded-lg mt-4 border-dashed border-primary/50">
+                            <UploadButton
+                              endpoint="imageUploader"
+                              onClientUploadComplete={(res) => {
+                                setImage(res[0].ufsUrl);
+                                toast.success("Upload Completed");
+                              }}
+                              onUploadError={(error: Error) => {
+                                toast.error(`ERROR! ${error.message}`);
+                              }}
+                            />
+                          </div>
+                        </>
+                      )}
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <div className="flex flex-1 flex-col gap-6">part 2</div>
