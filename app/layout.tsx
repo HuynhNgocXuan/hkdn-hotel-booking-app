@@ -30,7 +30,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en" suppressHydrationWarning={true}>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
@@ -42,7 +42,7 @@ export default function RootLayout({
           >
             <main className="flex flex-col min-h-screen bg-secondary">
               <NavBar />
-              <section className="flex-grow">
+              <section className="flex-grow ">
                 <Container> {children}</Container>
               </section>
             </main>
