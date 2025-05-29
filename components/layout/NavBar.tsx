@@ -13,14 +13,14 @@ const NavBar = () => {
   const { userId } = useAuth();
 
   return (
-    <div className="sticky top-0 border border-b-primary/10  ">
+    <div className="sticky top-0 border border-b-primary/10  bg-blue-300">
       <Container>
         <div className="flex justify-between items-center">
           <div
             className="flex gap-1 items-center cursor-pointer"
             onClick={() => router.push("/")}
           >
-            <Image src="/logo.png" alt="Logo" width="50" height="50" />
+            <Image className="rounded-full mr-4" src="/logo.png" alt="Logo" width="50" height="50" />
             <div className="text-lg font-bold">BOOKING HOTEL</div>
           </div>
 

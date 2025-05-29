@@ -16,12 +16,21 @@ import {
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Checkbox } from "../ui/checkbox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UploadButton } from "../uploadthing";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Loader2, XCircle } from "lucide-react";
 import axios from "axios";
+import useLocation from "@/hooks/useLocation";
+import { ICity, IState } from "country-state-city";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 interface AddHotelFormProps {
   hotel: HotelWithRooms | null;
@@ -90,11 +99,44 @@ const items = [
       { name: "coffeeShop", label: "Coffee Shop" },
     ],
   },
+  {
+    location: [
+      {
+        name: "country",
+        label: "Country",
+        description: "Select the country where your hotel is located",
+        placeholder: "Select a country",
+      },
+      {
+        name: "state",
+        label: "State",
+        description: "Select the state where your hotel is located",
+        placeholder: "Select a state",
+      },
+      {
+        name: "city",
+        label: "City",
+        description: "Select the city where your hotel is located",
+        placeholder: "Select a city",
+      },
+      {
+        name: "locationDescription",
+        label: "Location Description",
+        placeholder: "Describe the location of your hotel",
+      },
+    ],
+  },
 ];
 
 const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
   const [image, setImage] = useState<string | undefined>(hotel?.image);
   const [imageIsDeleting, setImageIsDeleting] = useState(false);
+  const [states, setStates] = useState<IState[]>([]);
+  const [cities, setCities] = useState<ICity[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { getAllCountries, getCountryStates, getStateCities } = useLocation();
+  const countries = getAllCountries();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -121,6 +163,23 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
     },
   });
 
+  useEffect(() => {
+    const selectedCountry = form.watch("country");
+    const countryStates = getCountryStates(selectedCountry);
+    if (countryStates) {
+      setStates(countryStates);
+    }
+  }, [form.watch("country")]);
+
+  useEffect(() => {
+    const selectedCountry = form.watch("country");
+    const selectedState = form.watch("state");
+    const stateCities = getStateCities(selectedCountry, selectedState);
+    if (stateCities) {
+      setCities(stateCities);
+    }
+  }, [form.watch("country"), form.watch("state")]);
+
   const handleImageDelete = (image: string) => {
     setImageIsDeleting(true);
     const imageKey = image.substring(image.lastIndexOf("/") + 1);
@@ -143,6 +202,8 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
   }
+
+
   return (
     <div>
       <Form {...form}>
@@ -256,7 +317,121 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
               />
             </div>
 
-            <div className="flex flex-1 flex-col gap-6">part 2</div>
+            <div className="flex flex-1 flex-col gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {items[2].location?.map((item) => (
+                  <FormField
+                    key={item.name}
+                    control={form.control}
+                    name={item.name as keyof z.infer<typeof formSchema>}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{item.label}</FormLabel>
+                        <FormDescription>{item.description}</FormDescription>
+                        <FormControl>
+                          {item.name === "country" ? (
+                            <Select
+                              disabled={isLoading}
+                              onValueChange={field.onChange}
+                              value={
+                                typeof field.value === "string"
+                                  ? field.value
+                                  : ""
+                              }
+                              defaultValue={
+                                typeof field.value === "string"
+                                  ? field.value
+                                  : undefined
+                              }
+                            >
+                              <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder={item.placeholder} />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {countries.map((country) => (
+                                  <SelectItem
+                                    key={country.isoCode}
+                                    value={country.isoCode}
+                                  >
+                                    {country.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          ) : item.name === "state" ? (
+                            <Select
+                              disabled={isLoading || states.length < 1}
+                              onValueChange={field.onChange}
+                              value={
+                                typeof field.value === "string"
+                                  ? field.value
+                                  : ""
+                              }
+                              defaultValue={
+                                typeof field.value === "string"
+                                  ? field.value
+                                  : undefined
+                              }
+                            >
+                              <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder={item.placeholder} />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {states.map((state) => (
+                                  <SelectItem
+                                    key={state.isoCode}
+                                    value={state.isoCode}
+                                  >
+                                    {state.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          ) : item.name === "city" ? (
+                            <Select
+                              disabled={isLoading || cities.length < 1}
+                              onValueChange={field.onChange}
+                              value={
+                                typeof field.value === "string"
+                                  ? field.value
+                                  : ""
+                              }
+                              defaultValue={
+                                typeof field.value === "string"
+                                  ? field.value
+                                  : undefined
+                              }
+                            >
+                              <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder={item.placeholder} />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {cities.map((city) => (
+                                  <SelectItem key={city.name} value={city.name}>
+                                    {city.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          ) : (
+                            <Textarea
+                              placeholder={item.placeholder}
+                              {...field}
+                              value={
+                                typeof field.value === "string"
+                                  ? field.value
+                                  : ""
+                              }
+                            />
+                          )}
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </form>
       </Form>
