@@ -20,7 +20,7 @@ import { useEffect, useState } from "react";
 import { UploadButton } from "../uploadthing";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
-import { Loader2, XCircle } from "lucide-react";
+import { Eye, Loader2, Pencil, PencilIcon, Trash, XCircle } from "lucide-react";
 import axios from "axios";
 import useLocation from "@/hooks/useLocation";
 import { ICity, IState } from "country-state-city";
@@ -31,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useRouter } from "next/navigation";
 
 interface AddHotelFormProps {
   hotel: HotelWithRooms | null;
@@ -134,13 +135,15 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
   const [states, setStates] = useState<IState[]>([]);
   const [cities, setCities] = useState<ICity[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [hotelIsDeleting, setHotelIsDeleting] = useState(false);
 
   const { getAllCountries, getCountryStates, getStateCities } = useLocation();
   const countries = getAllCountries();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
+    defaultValues: hotel || {
       title: "",
       description: "",
       image: "",
@@ -162,6 +165,16 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
       coffeeShop: false,
     },
   });
+
+  useEffect(() => {
+    if (typeof image === "string") {
+      form.setValue("image", image, {
+        shouldDirty: true,
+        shouldTouch: true,
+        shouldValidate: true,
+      });
+    }
+  }, [image]);
 
   useEffect(() => {
     const selectedCountry = form.watch("country");
@@ -200,9 +213,62 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
   };
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    setIsLoading(true);
+
+    if (hotel) {
+      axios
+        .patch(`/api/hotel/${hotel.id}`, values)
+        .then(() => {
+          toast.success("Hotel updated successfully");
+          router.push(`/hotel/${hotel.id}`);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error updating hotel:", error);
+          toast.error("Error updating hotel");
+          setIsLoading(false);
+        });
+    } else {
+      axios
+        .post("/api/hotel", values)
+        .then((res) => {
+          toast.success("Hotel created successfully");
+          router.push(`/hotel/${res.data.id}`);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error creating hotel:", error);
+          toast.error("Error creating hotel");
+          setIsLoading(false);
+        });
+    }
   }
 
+  const handleDeleteHotel = async (hotel: HotelWithRooms) => {
+    setHotelIsDeleting(true);
+    const getImageKey = (src: string) =>
+      src.substring(src.lastIndexOf("/") + 1);
+
+    try {
+      const imageKey = getImageKey(hotel.image);
+
+      if (!hotel?.id) {
+        toast.error("Hotel ID is required for deletion");
+        setHotelIsDeleting(false);
+        return;
+      }
+
+      await axios.post("/api/uploadthing/delete", { imageKey });
+      await axios.delete(`/api/hotel/${hotel.id}`);
+      toast.success("Hotel deleted successfully");
+      router.push("/hotel/new");
+      setHotelIsDeleting(false);
+    } catch (error) {
+      console.error("Error deleting hotel:", error);
+      toast.error("Error deleting hotel");
+      setHotelIsDeleting(false);
+    }
+  };
 
   return (
     <div>
@@ -267,7 +333,7 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
               <FormField
                 control={form.control}
                 name="image"
-                render={({ field }) => (
+                render={({}) => (
                   <FormItem>
                     <FormLabel>Upload an Image *</FormLabel>
                     <FormDescription>
@@ -430,6 +496,77 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                     )}
                   />
                 ))}
+              </div>
+
+              <div className="flex justify-between gap-6 flex-wrap">
+                {hotel ? (
+                  <Button
+                    disabled={isLoading}
+                    className="max-w-[150px] bg-green-600"
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="h-4 w-4" />
+                        Updating
+                      </>
+                    ) : (
+                      <>
+                        <PencilIcon className="h-4 w-4" />
+                        Update Hotel
+                      </>
+                    )}
+                  </Button>
+                ) : (
+                  <Button
+                    disabled={isLoading}
+                    className="max-w-[150px] bg-green-600"
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="h-4 w-4" />
+                        Creating
+                      </>
+                    ) : (
+                      <>
+                        <Pencil className="h-4 w-4" />
+                        Create Hotel
+                      </>
+                    )}
+                  </Button>
+                )}
+
+                {hotel && (
+                  <Button
+                    onClick={() => router.push(`/hotel-details/${hotel.id}`)}
+                    type="button"
+                    className="max-w-[150px] bg-blue-400"
+                  >
+                    <Eye className="h-4 w-4" />
+                    View
+                  </Button>
+                )}
+
+                {hotel && (
+                  <Button
+                    className="max-w-[150px]"
+                    type="button"
+                    variant={"destructive"}
+                    disabled={hotelIsDeleting || isLoading}
+                    onClick={() => handleDeleteHotel(hotel)}
+                  >
+                    {hotelIsDeleting ? (
+                      <>
+                        <Loader2 className="h-4 w-4" />
+                        Deleting
+                      </>
+                    ) : (
+                      <>
+                        <Trash className="h-4 w-4" />
+                        Delete Hotel
+                      </>
+                    )}
+                  </Button>
+                )}
               </div>
             </div>
           </div>
