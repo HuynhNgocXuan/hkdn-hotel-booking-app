@@ -21,6 +21,7 @@ model Hotel {
   state               String
   city                String
   locationDescription String    @db.LongText
+  
   gym                 Boolean   @default(false)
   spa                 Boolean   @default(false)
   bar                 Boolean   @default(false)

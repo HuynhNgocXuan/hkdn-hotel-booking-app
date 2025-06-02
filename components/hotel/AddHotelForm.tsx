@@ -20,7 +20,16 @@ import { useEffect, useState } from "react";
 import { UploadButton } from "../uploadthing";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
-import { Eye, Loader2, Pencil, PencilIcon, Trash, XCircle } from "lucide-react";
+import {
+  Eye,
+  Loader2,
+  Pencil,
+  PencilLineIcon,
+  Plus,
+  Terminal,
+  Trash,
+  XCircle,
+} from "lucide-react";
 import axios from "axios";
 import useLocation from "@/hooks/useLocation";
 import { ICity, IState } from "country-state-city";
@@ -32,6 +41,17 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useRouter } from "next/navigation";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import AddRoomForm from "../room/AddRoomForm";
+
 
 interface AddHotelFormProps {
   hotel: HotelWithRooms | null;
@@ -136,6 +156,7 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
   const [cities, setCities] = useState<ICity[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hotelIsDeleting, setHotelIsDeleting] = useState(false);
+  const [Open, setOpen] = useState(false);
 
   const { getAllCountries, getCountryStates, getStateCities } = useLocation();
   const countries = getAllCountries();
@@ -193,25 +214,7 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
     }
   }, [form.watch("country"), form.watch("state")]);
 
-  const handleImageDelete = (image: string) => {
-    setImageIsDeleting(true);
-    const imageKey = image.substring(image.lastIndexOf("/") + 1);
-    axios
-      .post("/api/uploadthing/delete", { imageKey })
-      .then((res) => {
-        if (res.data.success) {
-          setImage("");
-          toast.success("Image deleted successfully");
-        }
-      })
-      .catch(() => {
-        toast.error("Error deleting image");
-      })
-      .finally(() => {
-        setImageIsDeleting(false);
-      });
-  };
-
+  
   function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
 
@@ -244,6 +247,26 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
     }
   }
 
+
+  const handleImageDelete = (image: string) => {
+    setImageIsDeleting(true);
+    const imageKey = image.substring(image.lastIndexOf("/") + 1);
+    axios
+      .post("/api/uploadthing/delete", { imageKey })
+      .then((res) => {
+        if (res.data.success) {
+          setImage("");
+          toast.success("Image deleted successfully");
+        }
+      })
+      .catch(() => {
+        toast.error("Error deleting image");
+      })
+      .finally(() => {
+        setImageIsDeleting(false);
+      });
+  };
+
   const handleDeleteHotel = async (hotel: HotelWithRooms) => {
     setHotelIsDeleting(true);
     const getImageKey = (src: string) =>
@@ -268,6 +291,10 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
       toast.error("Error deleting hotel");
       setHotelIsDeleting(false);
     }
+  };
+
+  const handleDialogueOpen = () => {
+    setOpen(prev => !prev);
   };
 
   return (
@@ -498,7 +525,20 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                 ))}
               </div>
 
-              <div className="flex justify-between gap-6 flex-wrap">
+              {hotel && !hotel.rooms.length && (
+                <Alert className="text-white bg-indigo-400">
+                  <Terminal className="h-4 w-4 stroke-white" />
+                  <AlertTitle>Heads up!</AlertTitle>
+                  <AlertDescription className="text-white">
+                    Your hotel was created successfully 🔥
+                    <div>
+                      Please add some rooms to complete your hotel setup!
+                    </div>
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              <div className="flex justify-between gap-2 flex-wrap">
                 {hotel ? (
                   <Button
                     disabled={isLoading}
@@ -511,7 +551,7 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                       </>
                     ) : (
                       <>
-                        <PencilIcon className="h-4 w-4" />
+                        <PencilLineIcon className="h-4 w-4" />
                         Update Hotel
                       </>
                     )}
@@ -544,6 +584,30 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                     <Eye className="h-4 w-4" />
                     View
                   </Button>
+                )}
+
+                {hotel && (
+                  <Dialog open={Open} onOpenChange={setOpen}>
+                    <DialogTrigger>
+                      <Button variant={"outline"} type="button">
+                        <Plus className="w-4 h-4" />
+                        Add Room
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-[900px] w-[90%]">
+                      <DialogHeader>
+                        <DialogTitle>Add a Room</DialogTitle>
+                        <DialogDescription>
+                          Add details about the room you want to add to your
+                          hotel.
+                        </DialogDescription>
+                        <AddRoomForm
+                          hotel={hotel}
+                          handleDialogueOpen={handleDialogueOpen}
+                        />
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
                 )}
 
                 {hotel && (
