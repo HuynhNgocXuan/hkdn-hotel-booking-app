@@ -51,6 +51,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import AddRoomForm from "../room/AddRoomForm";
+import Image from "next/image";
 
 
 interface AddHotelFormProps {
@@ -222,27 +223,27 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
       axios
         .patch(`/api/hotel/${hotel.id}`, values)
         .then(() => {
+          setIsLoading(false);
           toast.success("Hotel updated successfully");
           router.push(`/hotel/${hotel.id}`);
-          setIsLoading(false);
         })
         .catch((error) => {
+          setIsLoading(false);
           console.error("Error updating hotel:", error);
           toast.error("Error updating hotel");
-          setIsLoading(false);
         });
     } else {
       axios
         .post("/api/hotel", values)
         .then((res) => {
+          setIsLoading(false);
           toast.success("Hotel created successfully");
           router.push(`/hotel/${res.data.id}`);
-          setIsLoading(false);
         })
         .catch((error) => {
+          setIsLoading(false);
           console.error("Error creating hotel:", error);
           toast.error("Error creating hotel");
-          setIsLoading(false);
         });
     }
   }
@@ -284,12 +285,12 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
       await axios.post("/api/uploadthing/delete", { imageKey });
       await axios.delete(`/api/hotel/${hotel.id}`);
       toast.success("Hotel deleted successfully");
-      router.push("/hotel/new");
       setHotelIsDeleting(false);
+      router.push("/hotel/new");
     } catch (error) {
+      setHotelIsDeleting(false);
       console.error("Error deleting hotel:", error);
       toast.error("Error deleting hotel");
-      setHotelIsDeleting(false);
     }
   };
 
@@ -370,14 +371,10 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                       {image ? (
                         <>
                           <div className="relative max-w-[400px] min-w-[200px] max-h-[400px] min-h-[200px] mt-4">
-                            <img
-                              src={image}
-                              alt="Hotel Image"
-                              className="object-contain"
-                            />
+                           <Image fill src={image} alt="Hotel Image" className="object-contain " />
 
                             <Button
-                              className="absolute right-[-42px] top-0"
+                              className="absolute right-[52px] top-[-25px]"
                               onClick={() => handleImageDelete(image)}
                               size="icon"
                               type="button"
@@ -596,7 +593,7 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                     </DialogTrigger>
                     <DialogContent className="max-w-[900px] w-[90%]">
                       <DialogHeader>
-                        <DialogTitle>Add a Room</DialogTitle>
+                        <DialogTitle>Add a room</DialogTitle>
                         <DialogDescription>
                           Add details about the room you want to add to your
                           hotel.
