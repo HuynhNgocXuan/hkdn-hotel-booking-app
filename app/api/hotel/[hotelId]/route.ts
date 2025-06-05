@@ -24,7 +24,7 @@ export async function PATCH(
       },
     });
  
-    return NextResponse.json(updatedHotel, { status: 201 });
+    return NextResponse.json(updatedHotel, { status: 200 });
   } catch (error) {
     console.error("Error in PATCH api/hotel:", error);
     return new NextResponse("Internal Server Error", { status: 500 });

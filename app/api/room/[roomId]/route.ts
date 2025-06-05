@@ -6,7 +6,7 @@ export async function PATCH(
   req: Request,
   { params }: { params: { roomId: string } }
 ) {
-  try {
+  try { 
     const body = await req.json();
     const { userId } = await auth();
 
@@ -24,7 +24,7 @@ export async function PATCH(
       },
     });
 
-    return NextResponse.json(updatedRoom, { status: 201 });
+    return NextResponse.json(updatedRoom, { status: 200 });
   } catch (error) {
     console.error("Error in PATCH api/room:", error);
     return new NextResponse("Internal Server Error", { status: 500 });
