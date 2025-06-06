@@ -528,7 +528,7 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
               {hotel && !hotel.rooms.length && (
                 <Alert className="text-white bg-indigo-400">
                   <Terminal className="h-4 w-4 stroke-white" />
-                  <AlertTitle>Heads up!</AlertTitle>
+                  <AlertTitle>One last step!</AlertTitle>
                   <AlertDescription className="text-white">
                     Your hotel was created successfully 🔥
                     <div>

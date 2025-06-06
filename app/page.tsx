@@ -1,10 +1,21 @@
-import { Button } from "@/components/ui/button";
+import { getHotels } from "@/actions/getHotels";
+import HotelList from "@/components/hotel/HotelList";
 
+interface HomeProps {
+  searchParams: {
+    title: string;
+    country: string;
+    state: string;
+    city: string;
+  };
+}
 
-export default function Home() {
+export default async function Home({ searchParams }: HomeProps) {
+  const hotels = await getHotels(searchParams);
+
   return (
     <div>
-      <Button>HOME PAGE</Button>
+      <HotelList hotels={hotels} />
     </div>
   );
 }
