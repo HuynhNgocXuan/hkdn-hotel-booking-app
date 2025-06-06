@@ -136,11 +136,11 @@ const AddRoomForm = ({ hotel, room, handleDialogueOpen }: AddRoomFormProps) => {
       axios
         .patch(`/api/room/${room.id}`, values)
         .then(() => {
-          toast.success("Room updated successfully");
+          toast.success("🎉 Room updated successfully!");
           setIsLoading(false);
           router.refresh();
           handleDialogueOpen();
-        })
+        }) 
         .catch((error) => {
           setIsLoading(false);
           console.error("Error updating room:", error);

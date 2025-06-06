@@ -52,7 +52,7 @@ import {
 } from "@/components/ui/dialog";
 import AddRoomForm from "../room/AddRoomForm";
 import Image from "next/image";
-
+import RoomCard from "../room/RoomCard";
 
 interface AddHotelFormProps {
   hotel: HotelWithRooms | null;
@@ -215,7 +215,6 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
     }
   }, [form.watch("country"), form.watch("state")]);
 
-  
   function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
 
@@ -248,7 +247,6 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
     }
   }
 
-
   const handleImageDelete = (image: string) => {
     setImageIsDeleting(true);
     const imageKey = image.substring(image.lastIndexOf("/") + 1);
@@ -268,7 +266,7 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
       });
   };
 
-  const handleDeleteHotel = async (hotel: HotelWithRooms) => {
+  const handleHotelDelete = async (hotel: HotelWithRooms) => {
     setHotelIsDeleting(true);
     const getImageKey = (src: string) =>
       src.substring(src.lastIndexOf("/") + 1);
@@ -280,7 +278,7 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
         toast.error("Hotel ID is required for deletion");
         setHotelIsDeleting(false);
         return;
-      }
+      } 
 
       await axios.post("/api/uploadthing/delete", { imageKey });
       await axios.delete(`/api/hotel/${hotel.id}`);
@@ -295,7 +293,7 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
   };
 
   const handleDialogueOpen = () => {
-    setOpen(prev => !prev);
+    setOpen((prev) => !prev);
   };
 
   return (
@@ -371,7 +369,12 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                       {image ? (
                         <>
                           <div className="relative max-w-[400px] min-w-[200px] max-h-[400px] min-h-[200px] mt-4">
-                           <Image fill src={image} alt="Hotel Image" className="object-contain " />
+                            <Image
+                              fill
+                              src={image}
+                              alt="Hotel Image"
+                              className="object-contain overflow-hidden rounded-lg"
+                            />
 
                             <Button
                               className="absolute right-[52px] top-[-25px]"
@@ -525,7 +528,7 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
               {hotel && !hotel.rooms.length && (
                 <Alert className="text-white bg-indigo-400">
                   <Terminal className="h-4 w-4 stroke-white" />
-                  <AlertTitle>Heads up!</AlertTitle>
+                  <AlertTitle>One last step!</AlertTitle>
                   <AlertDescription className="text-white">
                     Your hotel was created successfully 🔥
                     <div>
@@ -613,7 +616,7 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                     type="button"
                     variant={"destructive"}
                     disabled={hotelIsDeleting || isLoading}
-                    onClick={() => handleDeleteHotel(hotel)}
+                    onClick={() => handleHotelDelete(hotel)}
                   >
                     {hotelIsDeleting ? (
                       <>
@@ -629,6 +632,24 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                   </Button>
                 )}
               </div>
+
+              {hotel && !!hotel.rooms.length && (
+                <div>
+                  <hr className="border-gray-300" />
+                  <h4 className="text-lg font-semibold my-4">Hotel Rooms</h4>
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                    {hotel.rooms.map((room) => {
+                      return (
+                        <RoomCard
+                          key={room.id}
+                          hotel={hotel}
+                          room={room}
+                        ></RoomCard>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </form>

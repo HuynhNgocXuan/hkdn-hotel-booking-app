@@ -8,7 +8,7 @@ interface HotelPageProps {
   };
 }
 const Hotel = async ({ params }: HotelPageProps) => {
-  const { hotelId } = await params;
+  const { hotelId } =  params;
   const hotel = await getHotelById(hotelId);
   const { userId } = await auth();
 

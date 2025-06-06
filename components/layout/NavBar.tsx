@@ -13,7 +13,7 @@ const NavBar = () => {
   const { userId } = useAuth();
 
   return (
-    <div className="sticky top-0 border border-b-primary/10  bg-blue-300">
+    <div className="sticky top-0 border border-b-primary/10  bg-blue-300 z-50">
       <Container>
         <div className="flex justify-between items-center">
           <div
