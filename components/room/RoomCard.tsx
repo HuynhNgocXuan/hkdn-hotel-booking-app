@@ -20,7 +20,6 @@ import {
   Home,
   Loader2,
   PencilLine,
-  Plus,
   Ship,
   Trash,
   Trees,
@@ -164,7 +163,7 @@ const RoomCard = ({ hotel, room, bookings = [] }: RoomCardProps) => {
     <Card>
       <CardHeader className="group relative">
         <CardTitle>{room.title}</CardTitle>
-        <CardDescription className="line-clamp-2 overflow-hidden text-ellipsis transition-all duration-300 ease-in-out group-hover:line-clamp-none group-hover:overflow-visible group-hover:whitespace-normal">
+        <CardDescription className="line-clamp-1 overflow-hidden text-ellipsis transition-all duration-300 ease-in-out group-hover:line-clamp-none group-hover:overflow-visible group-hover:whitespace-normal">
           {room.description}
         </CardDescription>
       </CardHeader>

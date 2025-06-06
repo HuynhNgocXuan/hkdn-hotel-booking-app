@@ -8,6 +8,8 @@ import { Dumbbell, MapPin, Waves } from "lucide-react";
 import Image from "next/image";
 import useLocation from "@/hooks/useLocation";
 import { Button } from "../ui/button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPersonSwimming } from "@fortawesome/free-solid-svg-icons";
 
 const HotelCard = ({ hotel }: { hotel: HotelWithRooms }) => {
   const pathname = usePathname();
@@ -46,7 +48,7 @@ const HotelCard = ({ hotel }: { hotel: HotelWithRooms }) => {
             </AmenityItem>
             {hotel.swimmingPool && (
               <AmenityItem>
-                <Waves className="w-4 h-4" />
+                <FontAwesomeIcon  icon={faPersonSwimming} />
                 Pool
               </AmenityItem>
             )}
@@ -68,7 +70,7 @@ const HotelCard = ({ hotel }: { hotel: HotelWithRooms }) => {
                 </>
               )}
             </div>
-            {!isMyHotels && <Button onClick={() => router.push(`/hotel/${hotel.id}`)} variant="outline">Edit</Button>}
+            {isMyHotels && <Button onClick={() => router.push(`/hotel/${hotel.id}`)} variant="outline">Edit</Button>}
           </div>
         </div>
       </div>
