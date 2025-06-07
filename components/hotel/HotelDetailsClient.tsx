@@ -5,7 +5,6 @@ import { HotelWithRooms } from "./AddHotelForm";
 import { Booking } from "@prisma/client";
 import AmenityItem from "../AmenityItem";
 import {
-  Car,
   Clapperboard,
   Coffee,
   Dumbbell,
@@ -14,7 +13,6 @@ import {
   ShoppingBasket,
   Utensils,
   WashingMachine,
-  Waves,
   Wine,
 } from "lucide-react";
 import useLocation from "@/hooks/useLocation";
@@ -131,7 +129,7 @@ const HotelDetailsClient = ({
                 key={room.id}
                 hotel={hotel}
                 room={room}
-                bookings={bookings} 
+                bookings={bookings}
               />
             ))}
           </div>

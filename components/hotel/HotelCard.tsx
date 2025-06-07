@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { HotelWithRooms } from "./AddHotelForm";
 import { cn } from "@/lib/utils";
 import AmenityItem from "../AmenityItem";
-import { Dumbbell, MapPin, Waves } from "lucide-react";
+import { Dumbbell, MapPin } from "lucide-react";
 import Image from "next/image";
 import useLocation from "@/hooks/useLocation";
 import { Button } from "../ui/button";
