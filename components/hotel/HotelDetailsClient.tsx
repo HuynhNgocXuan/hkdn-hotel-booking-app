@@ -128,7 +128,7 @@ const HotelDetailsClient = ({
               <RoomCard
                 key={room.id}
                 hotel={hotel}
-                room={room}
+                room={room} 
                 bookings={bookings}
               />
             ))}

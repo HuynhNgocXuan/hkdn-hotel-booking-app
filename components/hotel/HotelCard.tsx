@@ -66,7 +66,7 @@ const HotelCard = ({ hotel }: { hotel: HotelWithRooms }) => {
                   <div className="font-semibold text-base">
                     {hotel.rooms[0].roomPrice}
                   </div>
-                  <div className="text-xs">/24hrs</div>
+                  <div className="text-xs">/night</div>
                 </>
               )}
             </div>
