@@ -27,6 +27,7 @@ import {
   Users,
   UtensilsCrossed,
   Volume,
+  Wand2,
   Wifi,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
@@ -47,6 +48,8 @@ import { DatePickerWithRange } from "./DatePickerWithRange";
 import { DateRange } from "react-day-picker";
 import { differenceInCalendarDays } from "date-fns";
 import { Checkbox } from "../ui/checkbox";
+import { useAuth } from "@clerk/nextjs";
+import useBookRoom from "@/hooks/useBookRoom";
 
 interface RoomCardProps {
   hotel?: Hotel & {
@@ -56,7 +59,10 @@ interface RoomCardProps {
   bookings?: Booking[];
 }
 const RoomCard = ({ hotel, room, bookings = [] }: RoomCardProps) => {
+  const { setClientSecret, setPaymentIntentId, setRoomData, paymentIntentId } =
+    useBookRoom();
   const [isLoading, setIsLoading] = useState(false);
+  const [bookingIsLoading, setBookingIsLoading] = useState(false);
   const [Open, setOpen] = useState(false);
   const [date, setDate] = useState<DateRange | undefined>();
   const [totalPrice, setTotalPrice] = useState(room.roomPrice);
@@ -66,6 +72,7 @@ const RoomCard = ({ hotel, room, bookings = [] }: RoomCardProps) => {
   const pathname = usePathname();
   const isHotelDetailsPage = pathname.includes("hotel-details");
   const router = useRouter();
+  const { userId } = useAuth();
 
   const amenities = [
     {
@@ -149,8 +156,7 @@ const RoomCard = ({ hotel, room, bookings = [] }: RoomCardProps) => {
           setTotalPrice(
             room.roomPrice * dayCount + room.breakFastPrice * dayCount
           );
-        } 
-        else {
+        } else {
           setTotalPrice(room.roomPrice * dayCount);
         }
       }
@@ -181,6 +187,63 @@ const RoomCard = ({ hotel, room, bookings = [] }: RoomCardProps) => {
       setIsLoading(false);
       console.error("Error deleting room:", error);
       toast.error("Error deleting room");
+    }
+  };
+
+  const handleBookRoom = () => {
+    if (!userId) return toast.error("Oops! Make sure you are logged in.");
+    if (!hotel?.userId)
+      return toast.error(
+        "Something went wrong, refresh the page and try again"
+      );
+
+    if (date?.from && date?.to) {
+      setBookingIsLoading(true);
+
+      const bookingRoomData = {
+        room,
+        totalPrice,
+        breakFastIncluded: includeBreakFast,
+        checkInDate: date.from,
+        checkOutDate: date.to,
+      };
+      setRoomData(bookingRoomData);
+
+      fetch("/api/create-payment-intent", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          booking: {
+            hotelOwnerId: hotel.userId,
+            hotelId: hotel.id,
+            roomId: room.id, 
+            startDate: date.from,
+            endDate: date.to,
+            breakFastIncluded: includeBreakFast,
+            totalPrice: totalPrice,
+            currency: "usd"
+          },
+          payment_intent_id: paymentIntentId,
+        }),
+      })
+        .then((res) => {
+          setBookingIsLoading(false);
+          if (res.status === 401) return router.push("/login");
+          return res.json();
+        })
+        .then((data) => {
+          setClientSecret(data.paymentIntent.client_secret);
+          setPaymentIntentId(data.paymentIntent.id);
+          router.push("/book-room");
+        })
+        .catch((error) => {
+          console.log("Error", error);
+          toast.error("Error!", error);
+        });
+    } else {
+      toast.warning("Oops! Select Date");
     }
   };
 
@@ -228,7 +291,7 @@ const RoomCard = ({ hotel, room, bookings = [] }: RoomCardProps) => {
       </CardContent>
       <CardFooter>
         {isHotelDetailsPage ? (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 w-full">
             <div>
               <div className="mb-2">
                 Select days that you will spend in this room
@@ -251,8 +314,28 @@ const RoomCard = ({ hotel, room, bookings = [] }: RoomCardProps) => {
             )}
             <div>
               Total Price: <span className="font-bold">{totalPrice}</span> for{" "}
-              <span className="font-bold">{days}</span> {days > 1 ? "Nights" : "Night"}
+              <span className="font-bold">{days}</span>{" "}
+              {days > 1 ? "Nights" : "Night"}
             </div>
+            {bookingIsLoading ? (
+              <Button
+                variant="secondary"
+                disabled={bookingIsLoading}
+                type="button"
+              >
+                <Loader2 className="h-4 w-4" />
+                Loading...{" "}
+              </Button>
+            ) : (
+              <Button
+                disabled={bookingIsLoading}
+                type="button"
+                onClick={() => handleBookRoom()}
+              >
+                <Wand2 className="h-4 w-4" />
+                Book Room
+              </Button>
+            )}
           </div>
         ) : (
           <div className="flex justify-between w-full">
