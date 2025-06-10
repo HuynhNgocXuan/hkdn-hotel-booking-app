@@ -83,7 +83,7 @@ model Booking {
   userId             String
   userName           String
   userEmail          String
-  roomId             String
+  roomId             String 
   hotelId            String
   hotelOwnerId       String
   startDate          DateTime

@@ -12,7 +12,7 @@ interface BookRoomStore {
   resetBookingData: () => void;
 }
 
-type RoomDataType = {
+type RoomDataType = { 
   room: Room;
   totalPrice: number;
   breakFastIncluded: boolean;
