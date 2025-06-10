@@ -80,9 +80,10 @@ model Room {
 
 model Booking {
   id                 String   @id @default(uuid())
-  userName           String
   userId             String
-  roomId             String
+  userName           String
+  userEmail          String
+  roomId             String 
   hotelId            String
   hotelOwnerId       String
   startDate          DateTime

@@ -7,7 +7,7 @@ export const getHotels = async (searchParams: {
   city: string;
 }) => { 
   try {
-    const { title, country, state, city } = searchParams;
+    const { title, country, state, city } =  searchParams;
 
     const hotels = await prismadb.hotel.findMany({
       where: {

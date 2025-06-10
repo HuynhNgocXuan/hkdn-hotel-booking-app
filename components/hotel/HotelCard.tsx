@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { HotelWithRooms } from "./AddHotelForm";
 import { cn } from "@/lib/utils";
 import AmenityItem from "../AmenityItem";
-import { Dumbbell, MapPin, Waves } from "lucide-react";
+import { Dumbbell, MapPin } from "lucide-react";
 import Image from "next/image";
 import useLocation from "@/hooks/useLocation";
 import { Button } from "../ui/button";
@@ -66,7 +66,7 @@ const HotelCard = ({ hotel }: { hotel: HotelWithRooms }) => {
                   <div className="font-semibold text-base">
                     {hotel.rooms[0].roomPrice}
                   </div>
-                  <div className="text-xs">/24hrs</div>
+                  <div className="text-xs">/night</div>
                 </>
               )}
             </div>
