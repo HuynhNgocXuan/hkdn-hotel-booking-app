@@ -304,7 +304,7 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
             {hotel ? "Update your hotel" : "Describe Your Hotel"}
           </h2>
 
-          <div className="flex flex-col md:flex-row gap-6">
+          <div className="flex flex-col md:flex-row gap-6"> 
             <div className="flex flex-1 flex-col gap-6">
               {items[0].input?.map((item) => (
                 <FormField
