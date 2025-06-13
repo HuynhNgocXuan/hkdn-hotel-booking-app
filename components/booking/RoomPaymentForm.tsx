@@ -15,11 +15,51 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { Terminal } from "lucide-react";
+import { endOfDay, isWithinInterval, startOfDay } from "date-fns";
+import { Booking } from "@prisma/client";
 
 interface RoomPaymentFormProps {
   clientSecret: string;
   handleSetPaymentSuccess: (value: boolean) => void;
 }
+
+type DateRangesType = {
+  startDate: Date;
+  endDate: Date;
+};
+
+function hasOverlap(
+  startDate: Date,
+  endDate: Date,
+  dateRanges: DateRangesType[]
+) {
+  const targetInterval = {
+    start: startOfDay(new Date(startDate)),
+    end: endOfDay(new Date(endDate)),
+  };
+
+  for (const range of dateRanges) {
+    const rangeStart = startOfDay(new Date(range.startDate));
+    const rangeEnd = endOfDay(new Date(range.endDate));
+
+    if (
+      isWithinInterval(targetInterval.start, {
+        start: rangeStart,
+        end: rangeEnd,
+      }) ||
+      isWithinInterval(targetInterval.end, {
+        start: rangeStart,
+        end: rangeEnd,
+      }) ||
+      (targetInterval.start < rangeStart && targetInterval.end > rangeEnd)
+    ) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 const RoomPaymentForm = ({
   clientSecret,
   handleSetPaymentSuccess,
@@ -42,13 +82,32 @@ const RoomPaymentForm = ({
     setIsLoading(true);
 
     if (!stripe || !elements || !bookingRoomData) {
-      toast.warning("elemtnt")
       return;
     }
-    toast.warning("book");
-
 
     try {
+      const bookings =  await axios.get(`/api/booking/${bookingRoomData.room.id}`);
+
+      const roomBookingDates = bookings.data.map((booking: Booking) => {
+        return {
+          startDate: booking.startDate,
+          endDate: booking.endDate,
+        };
+      });
+
+      const overlapFound = hasOverlap(
+        bookingRoomData.checkInDate,
+        bookingRoomData.checkOutDate,
+        roomBookingDates
+      );
+
+      if (overlapFound) {
+        setIsLoading(false);
+        return toast.warning(
+          "Oops! Some of the days you are trying to book have already been reserved. Please go back and select different dates or rooms"
+        );
+      }
+
       await stripe
         .confirmPayment({ elements, redirect: "if_required" })
         .then((result) => {
@@ -70,10 +129,9 @@ const RoomPaymentForm = ({
                   error?.message ||
                   "Something went wrong";
 
-                toast.error(errorMessage); 
+                toast.error(errorMessage);
                 setIsLoading(false);
               });
-                
           } else {
             setIsLoading(false);
           }

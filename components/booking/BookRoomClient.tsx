@@ -4,7 +4,7 @@ import useBookRoom from "@/hooks/useBookRoom";
 import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import RoomCard from "../room/RoomCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import RoomPaymentForm from "./RoomPaymentForm";
 import { Button } from "../ui/button";
@@ -21,6 +21,10 @@ const BookRoomClient = () => {
   const { theme } = useTheme();
   const router = useRouter();
 
+  useEffect(() => {
+    setPageLoaded(true);
+  }, []);
+
   const option: StripeElementsOptions = {
     clientSecret,
     appearance: {
@@ -32,7 +36,7 @@ const BookRoomClient = () => {
     setPaymentSuccess(value);
   };
 
-  if (!paymentSuccess && (!bookingRoomData || !clientSecret))
+  if (pageLoaded && !paymentSuccess && (!bookingRoomData || !clientSecret))
     return (
       <div className="flex items-center flex-col gap-4">
         <div className="text-rose-500">
@@ -48,8 +52,7 @@ const BookRoomClient = () => {
         </div>
       </div>
     );
-  
-  
+
   if (paymentSuccess)
     return (
       <div className="flex items-center flex-col gap-4">
@@ -59,7 +62,6 @@ const BookRoomClient = () => {
         </Button>
       </div>
     );
-
 
   return (
     <div>

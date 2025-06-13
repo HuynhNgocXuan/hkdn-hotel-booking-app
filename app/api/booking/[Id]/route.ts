@@ -31,12 +31,11 @@ export async function PATCH(
       { message: (error as any).message },
       { status: 500 }
     );
-
   }
 }
- 
+
 export async function DELETE(
-  req: Request, 
+  req: Request,
   { params }: { params: { Id: string } }
 ) {
   try {
@@ -56,6 +55,34 @@ export async function DELETE(
     return NextResponse.json(deletedBooking, { status: 201 });
   } catch (error) {
     console.error("Error in DELETE api/booking/Id:", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
+}
+export async function GET(
+  req: Request,
+  { params }: { params: { Id: string } }
+) {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) return new NextResponse("Unauthorized", { status: 401 });
+
+    if (!params.Id)
+      return new NextResponse("Hotel ID is required", { status: 400 });
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const bookings = await prismadb.booking.findMany({
+      where: {
+        paymentStatus: true,
+        roomId: params.Id,
+        endDate: { gt: yesterday },
+      },
+    });
+
+    return NextResponse.json(bookings, { status: 201 });
+  } catch (error) {
+    console.error("Error in GET api/booking/Id:", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
