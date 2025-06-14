@@ -161,8 +161,8 @@ const RoomPaymentForm = ({
       <h2 className="font-semibold mt-4 mb-2 text-lg">Payment Information</h2>
       <PaymentElement id="payment-element" options={{ layout: "tabs" }} />
 
-      <div className="flex flex-col gap-1">
-        <hr />{" "}
+      <div className="flex flex-col gap-1 my-6">
+        <hr />
         <div className="flex flex-col gap-1">
           <h2 className="font-semibold mb-1 text-lg">Your Booking Summary</h2>
           <div>

@@ -16,6 +16,7 @@ export const getBookings = async (hotelId: string) => {
 
     return bookings;
   } catch (error) {
+    console.log(error)
     if (error instanceof Error) {
       throw new Error(error.message);
     }
