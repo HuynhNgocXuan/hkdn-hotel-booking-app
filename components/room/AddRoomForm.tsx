@@ -1,3 +1,5 @@
+"use client"
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Hotel, Room } from "@prisma/client";
 import { useForm } from "react-hook-form";

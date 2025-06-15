@@ -15,13 +15,19 @@ const NavBar = () => {
   return (
     <div className="sticky top-0 border border-b-primary/10  bg-blue-300 z-50">
       <Container>
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center ">
           <div
-            className="flex gap-1 items-center cursor-pointer"
+            className="flex gap-1 items-center cursor-pointer text-2xl font-bold   transition duration-200 hover:text-teal-800 active:scale-95"
             onClick={() => router.push("/")}
           >
-            <Image className="rounded-full mr-4" src="/logo.png" alt="Logo" width="50" height="50" />
-            <div className="text-lg font-bold">BOOKING HOTEL</div>
+            <Image
+              className="rounded-full mr-4"
+              src="/logo.png"
+              alt="Logo"
+              width="50"
+              height="50"
+            />
+            <div className="text-lg font-bold ">BOOKING HOTEL</div>
           </div>
 
           <SearchInput />
@@ -31,7 +37,7 @@ const NavBar = () => {
               <ModeToggle />
             </div>
             <UserButton />
-              <NavMenu />
+            <NavMenu />
             {!userId && (
               <>
                 <Button

@@ -23,7 +23,7 @@ const HotelCard = ({ hotel }: { hotel: HotelWithRooms }) => {
     <div
       onClick={() => !isMyHotels && router.push(`/hotel-details/${hotel.id}`)}
       className={cn(
-        "col-span-1 cursor-pointer transition hover:scale-105",
+        "col-span-1 cursor-pointer transition hover:scale-104",
         isMyHotels && "cursor-default"
       )}
     >

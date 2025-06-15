@@ -1,27 +1,22 @@
 import prismadb from "@/lib/prismadb";
+import { auth } from "@clerk/nextjs/server";
 
-export const getHotels = async (searchParams: {
-  title?: string;
-  country?: string;
-  state?: string;
-  city?: string;
-}) => {
+export const getHotelsByUserId = async () => {
   try {
-    const { title, country, state, city } = await searchParams;
+    const { userId } = await auth();
 
+    if (!userId) throw new Error("Unauthorized");
     const hotels = await prismadb.hotel.findMany({
       where: {
-        title: {
-          contains: title,
-        },
-        country,
-        state,
-        city,
+        userId,
       },
       include: {
         rooms: true,
       },
     });
+
+    if (!hotels) return null;
+
     return hotels;
   } catch (error) {
     if (error instanceof Error) {
@@ -30,4 +25,3 @@ export const getHotels = async (searchParams: {
     throw new Error(String(error));
   }
 };
-  
