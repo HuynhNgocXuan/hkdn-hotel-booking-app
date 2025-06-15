@@ -1,13 +1,13 @@
 import prismadb from "@/lib/prismadb";
 
 export const getHotels = async (searchParams: {
-  title: string;
-  country: string;
-  state: string;
-  city: string;
-}) => { 
+  title?: string;
+  country?: string;
+  state?: string;
+  city?: string;
+}) => {
   try {
-    const { title, country, state, city } =  searchParams;
+    const { title, country, state, city } = await searchParams;
 
     const hotels = await prismadb.hotel.findMany({
       where: {
@@ -30,3 +30,4 @@ export const getHotels = async (searchParams: {
     throw new Error(String(error));
   }
 };
+  
