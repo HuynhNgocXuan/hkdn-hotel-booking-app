@@ -114,7 +114,7 @@ const RoomPaymentForm = ({
           if (!result.error) {
             axios
               .patch(`/api/booking/${result.paymentIntent.id}`)
-              .then((res) => {
+              .then(() => {
                 toast.success("🎉 Room Reserved!");
                 router.refresh();
                 resetBookingData();
