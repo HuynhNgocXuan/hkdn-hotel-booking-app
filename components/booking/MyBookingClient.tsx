@@ -27,41 +27,41 @@ import {
   Volume,
   Wifi,
 } from "lucide-react";
-import {  useRouter } from "next/navigation";
-import React, {  useState } from "react";
+import React, { useState } from "react";
 
 import { toast } from "sonner";
 import { differenceInCalendarDays } from "date-fns";
-import { useAuth } from "@clerk/nextjs";
 import useBookRoom from "@/hooks/useBookRoom";
 import useLocation from "@/hooks/useLocation";
 import moment from "moment";
 import { Button } from "../ui/button";
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 interface MyBookingClientProps {
   booking: Booking & { Room: Room | null } & { Hotel: Hotel | null };
 }
 
 const MyBookingClient: React.FC<MyBookingClientProps> = ({ booking }) => {
-  const { setClientSecret, setPaymentIntentId, setRoomData, paymentIntentId } = useBookRoom();
+  const { setClientSecret, setPaymentIntentId, setRoomData, paymentIntentId } =
+    useBookRoom();
   const [bookingIsLoading, setBookingIsLoading] = useState(false);
   const { getCountryByCode, getStateByCode } = useLocation();
   const { Hotel, Room } = booking;
-
-if (!Hotel || !Room) return <div>Hotel or Room info missing!</div>;
-
-
-  const country = getCountryByCode(Hotel.country);
-  const state = getStateByCode(Hotel.country, Hotel.state);
   const { userId } = useAuth();
   const router = useRouter();
-
+  
   const startDate = moment(booking.startDate).format("MMMM Do YYYY");
   const endDate = moment(booking.endDate).format("MMMM Do YYYY");
 
   const dayCount = differenceInCalendarDays(booking.endDate, booking.startDate);
 
+  if (!Hotel || !Room) return <div>Hotel or Room info missing!</div>;
   
+  const country = getCountryByCode(Hotel.country);
+  const state = getStateByCode(Hotel.country, Hotel.state);
+
+
   const amenities = [
     {
       show: true,
@@ -194,7 +194,6 @@ if (!Hotel || !Room) return <div>Hotel or Room info missing!</div>;
       });
   };
 
-
   return (
     <Card>
       <CardHeader className="group relative">
@@ -291,6 +290,6 @@ if (!Hotel || !Room) return <div>Hotel or Room info missing!</div>;
       </CardFooter>
     </Card>
   );
-}
+};
 
 export default MyBookingClient;
