@@ -3,7 +3,7 @@
 import { Search } from "lucide-react";
 import { Input } from "./ui/input";
 import { ChangeEventHandler, useEffect, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import queryString from "query-string";
 import { useDebounceValue } from "@/hooks/useDebounceValue";
 
@@ -14,8 +14,7 @@ const SearchInput = () => {
   const [value, setValue] = useState(title || "");
 
   const router = useRouter();
-  const debounceValue = useDebounceValue(value, 500);
-  const pathname = usePathname();
+  const debounceValue = useDebounceValue(value, 300);
 
   useEffect(() => {
     const query = {
@@ -26,7 +25,7 @@ const SearchInput = () => {
       {
         url: window.location.href,
         query,
-      },
+      },  
       {
         skipNull: true,
         skipEmptyString: true,
