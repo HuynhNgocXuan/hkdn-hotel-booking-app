@@ -1,26 +1,25 @@
 import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import type { RouteContext } from "next";
 
-export async function PATCH(
-  req: Request,
-  { params }: { params: { Id: string } }
-) {
+export async function PATCH(req: NextRequest, context: RouteContext) {
   try {
     const { userId } = await auth();
 
-    if (!userId) return new NextResponse("Unauthorized", { status: 401 });
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
 
-    if (!params.Id)
+    const { Id } = await await context.params as { Id: string };
+
+    if (!Id) {
       return new NextResponse("Payment Intent ID is required", { status: 400 });
+    }
 
     const updateBooking = await prismadb.booking.update({
-      where: {
-        paymentIntentId: params.Id,
-      },
-      data: {
-        paymentStatus: true,
-      },
+      where: { paymentIntentId: Id },
+      data: { paymentStatus: true },
     });
 
     return NextResponse.json(updateBooking, { status: 200 });
@@ -34,22 +33,22 @@ export async function PATCH(
   }
 }
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { Id: string } }
-) {
+export async function DELETE(req: NextRequest, context: RouteContext) {
   try {
     const { userId } = await auth();
 
-    if (!userId) return new NextResponse("Unauthorized", { status: 401 });
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
 
-    if (!params.Id)
+    const { Id } = await context.params as { Id: string };
+
+    if (!Id) {
       return new NextResponse("Booking ID is required", { status: 400 });
+    }
 
     const deletedBooking = await prismadb.booking.delete({
-      where: {
-        id: params.Id,
-      },
+      where: { id: Id },
     });
 
     return NextResponse.json(deletedBooking, { status: 201 });
@@ -58,24 +57,28 @@ export async function DELETE(
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
-export async function GET(
-  req: Request,
-  { params }: { params: { Id: string } }
-) {
+
+export async function GET(req: NextRequest, context: RouteContext) {
   try {
     const { userId } = await auth();
 
-    if (!userId) return new NextResponse("Unauthorized", { status: 401 });
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
 
-    if (!params.Id)
+    const { Id } = await context.params as { Id: string };
+
+    if (!Id) {
       return new NextResponse("Hotel ID is required", { status: 400 });
+    }
 
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
+
     const bookings = await prismadb.booking.findMany({
       where: {
         paymentStatus: true,
-        roomId: params.Id,
+        roomId: Id,
         endDate: { gt: yesterday },
       },
     });
