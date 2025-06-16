@@ -1,11 +1,14 @@
 import { getHotelById } from "@/actions/getHotelById";
 import AddHotelForm from "@/components/hotel/AddHotelForm";
 import { auth } from "@clerk/nextjs/server";
-import type { PageProps } from "next"; // ✅ Thêm dòng này
 
-const Hotel = async ({ params }: PageProps<{ hotelId: string }>) => {
+interface HotelPageProps {
+  params: {
+    hotelId: string;
+  };
+}
+const Hotel = async ({ params }: HotelPageProps) => {
   const { hotelId } = params;
-
   const hotel = await getHotelById(hotelId);
   const { userId } = await auth();
 

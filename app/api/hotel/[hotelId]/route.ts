@@ -1,16 +1,18 @@
 import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import type { RouteContext } from "next"; // nếu bạn dùng type `RouteContext`
 
-export async function PATCH(req: Request, context: RouteContext) {
+export async function PATCH(
+  req: Request,
+  context: { params: { hotelId: string } }
+) {
   try {
     const body = await req.json();
     const { userId } = await auth();
 
     if (!userId) return new NextResponse("Unauthorized", { status: 401 });
 
-    const hotelId = (context.params as { hotelId: string }).hotelId;
+    const hotelId = context.params.hotelId;
 
     if (!hotelId)
       return new NextResponse("Hotel ID is required", { status: 400 });
@@ -31,13 +33,16 @@ export async function PATCH(req: Request, context: RouteContext) {
   }
 }
 
-export async function DELETE(req: Request, context: RouteContext) {
+export async function DELETE(
+  req: Request,
+  context: { params: { hotelId: string } }
+) {
   try {
     const { userId } = await auth();
 
     if (!userId) return new NextResponse("Unauthorized", { status: 401 });
 
-    const hotelId = (context.params as { hotelId: string }).hotelId;
+    const hotelId = context.params.hotelId;
 
     if (!hotelId)
       return new NextResponse("Hotel ID is required", { status: 400 });
