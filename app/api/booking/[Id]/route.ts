@@ -27,7 +27,7 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
   } catch (error) {
     console.error("[BOOKING_PATCH_ERROR]", error);
     return NextResponse.json(
-      { message: (error as any).message ?? "Internal Server Error" },
+      { message: error },
       { status: 500 }
     );
   }
