@@ -1,9 +1,10 @@
 import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
-import type { NextApiRequest } from "next";
+import type { RouteContext } from "next";
 
-export async function PATCH(req: NextRequest, { params }: { params: { Id: string } }) {
+// PATCH: Cập nhật trạng thái thanh toán
+export async function PATCH(req: NextRequest, context: RouteContext) {
   try {
     const { userId } = await auth();
 
@@ -11,7 +12,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { Id: string
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { Id } = params;
+    const { Id } = context.params as { Id: string };
 
     if (!Id) {
       return new NextResponse("Payment Intent ID is required", { status: 400 });
@@ -25,12 +26,16 @@ export async function PATCH(req: NextRequest, { params }: { params: { Id: string
     return NextResponse.json(updateBooking, { status: 200 });
   } catch (error) {
     console.error("Error in PATCH api/booking/Id:", error);
-    return NextResponse.json({ message: (error as any).message }, { status: 500 });
+    return NextResponse.json(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      { message: (error as any).message },
+      { status: 500 }
+    );
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { Id: string } }) {
-
+// DELETE: Xóa booking
+export async function DELETE(req: NextRequest, context: RouteContext) {
   try {
     const { userId } = await auth();
 
@@ -38,7 +43,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { Id: strin
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { Id } = await context.params as { Id: string };
+    const { Id } = context.params as { Id: string };
 
     if (!Id) {
       return new NextResponse("Booking ID is required", { status: 400 });
@@ -54,8 +59,9 @@ export async function DELETE(req: NextRequest, { params }: { params: { Id: strin
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
-export async function GET(req: NextRequest, { params }: { params: { Id: string } }) {
 
+// GET: Lấy danh sách booking
+export async function GET(req: NextRequest, context: RouteContext) {
   try {
     const { userId } = await auth();
 
@@ -63,7 +69,7 @@ export async function GET(req: NextRequest, { params }: { params: { Id: string }
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { Id } = await context.params as { Id: string };
+    const { Id } = context.params as { Id: string };
 
     if (!Id) {
       return new NextResponse("Hotel ID is required", { status: 400 });
