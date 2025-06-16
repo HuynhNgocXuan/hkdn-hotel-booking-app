@@ -1,16 +1,18 @@
 import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import type { RouteContext } from "next"; // Optional
 
-export async function PATCH(req: Request, context: RouteContext) {
+export async function PATCH(
+  req: Request,
+  context: { params: { roomId: string } }
+) {
   try {
     const body = await req.json();
     const { userId } = await auth();
 
     if (!userId) return new NextResponse("Unauthorized", { status: 401 });
 
-    const roomId = (context.params as { roomId: string }).roomId;
+    const roomId = context.params.roomId;
 
     if (!roomId)
       return new NextResponse("Room ID is required", { status: 400 });
@@ -31,13 +33,16 @@ export async function PATCH(req: Request, context: RouteContext) {
   }
 }
 
-export async function DELETE(req: Request, context: RouteContext) {
+export async function DELETE(
+  req: Request,
+  context: { params: { roomId: string } }
+) {
   try {
     const { userId } = await auth();
 
     if (!userId) return new NextResponse("Unauthorized", { status: 401 });
 
-    const roomId = (context.params as { roomId: string }).roomId;
+    const roomId = context.params.roomId;
 
     if (!roomId)
       return new NextResponse("Room ID is required", { status: 400 });

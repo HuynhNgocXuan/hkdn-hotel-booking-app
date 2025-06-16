@@ -2,7 +2,12 @@
 
 import { Loader2, Search } from "lucide-react";
 import { Input } from "./ui/input";
-import { ChangeEventHandler, useEffect, useState } from "react";
+import {
+  ChangeEventHandler,
+  useEffect,
+  useState,
+  KeyboardEventHandler,
+} from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import queryString from "query-string";
 import { useDebounceValue } from "@/hooks/useDebounceValue";
@@ -15,16 +20,17 @@ const SearchInput = () => {
   const router = useRouter();
   const debounceValue = useDebounceValue(value, 300);
 
-  useEffect(() => {
-    if (debounceValue === title) return;
+  const isHomePage =
+    typeof window !== "undefined" && window.location.pathname === "/";
 
+  const pushToSearch = (searchText: string) => {
     setIsLoading(true);
 
-    const query = { title: debounceValue };
+    const query = { title: searchText };
 
     const url = queryString.stringifyUrl(
       {
-        url: window.location.pathname, 
+        url: "/",
         query,
       },
       {
@@ -37,13 +43,28 @@ const SearchInput = () => {
 
     const timeout = setTimeout(() => {
       setIsLoading(false);
-    }, 500); 
+    }, 500);
 
     return () => clearTimeout(timeout);
-  }, [debounceValue, router]);
+  };
+
+  useEffect(() => {
+    // Chỉ chạy debounce nếu đang ở trang "/"
+    if (!isHomePage) return;
+    if (debounceValue === title) return;
+
+    pushToSearch(debounceValue); // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debounceValue]);
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     setValue(e.target.value);
+  };
+
+  const onKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      pushToSearch(value); // Bỏ qua debounce, tìm kiếm ngay
+    }
   };
 
   return (
@@ -56,6 +77,7 @@ const SearchInput = () => {
       <Input
         value={value}
         onChange={onChange}
+        onKeyDown={onKeyDown}
         placeholder="Search"
         className="w-100 pl-10 bg-primary/10"
       />
