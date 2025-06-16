@@ -1,9 +1,9 @@
 import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
-import type { RouteContext } from "next";
+import type { NextApiRequest } from "next";
 
-export async function PATCH(req: NextRequest, context: RouteContext) {
+export async function PATCH(req: NextRequest, { params }: { params: { Id: string } }) {
   try {
     const { userId } = await auth();
 
@@ -11,7 +11,7 @@ export async function PATCH(req: NextRequest, context: RouteContext) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { Id } = await await context.params as { Id: string };
+    const { Id } = params;
 
     if (!Id) {
       return new NextResponse("Payment Intent ID is required", { status: 400 });
@@ -25,15 +25,12 @@ export async function PATCH(req: NextRequest, context: RouteContext) {
     return NextResponse.json(updateBooking, { status: 200 });
   } catch (error) {
     console.error("Error in PATCH api/booking/Id:", error);
-    return NextResponse.json(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      { message: (error as any).message },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: (error as any).message }, { status: 500 });
   }
 }
 
-export async function DELETE(req: NextRequest, context: RouteContext) {
+export async function DELETE(req: NextRequest, { params }: { params: { Id: string } }) {
+
   try {
     const { userId } = await auth();
 
@@ -57,8 +54,8 @@ export async function DELETE(req: NextRequest, context: RouteContext) {
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
+export async function GET(req: NextRequest, { params }: { params: { Id: string } }) {
 
-export async function GET(req: NextRequest, context: RouteContext) {
   try {
     const { userId } = await auth();
 
