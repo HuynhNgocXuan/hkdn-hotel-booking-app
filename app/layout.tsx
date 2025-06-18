@@ -6,7 +6,7 @@ import NavBar from "@/components/layout/NavBar";
 import { ThemeProvider } from "@/components/theme-provider";
 import Container from "@/components/Container";
 import { Toaster } from "@/components/ui/sonner";
-import LocationFilter from "@/components/LocationFilter";
+import LocationFilterClient from "@/components/LocationFilterClient";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,7 +43,7 @@ export default function RootLayout({
           >
             <main className="flex flex-col min-h-screen bg-secondary">
               <NavBar />
-              <LocationFilter />
+              <LocationFilterClient />
               <section className="flex-grow">
                 <Container> {children}</Container>
               </section>
