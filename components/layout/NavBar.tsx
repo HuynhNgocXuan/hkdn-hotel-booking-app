@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import SearchInput from "../SearchInput";
 import { ModeToggle } from "../theme-toggle";
 import { NavMenu } from "./NavMenu";
+import { Suspense } from "react";
 
 const NavBar = () => {
   const router = useRouter();
@@ -29,9 +30,9 @@ const NavBar = () => {
             />
             <div className="text-lg font-bold ">BOOKING HOTEL</div>
           </div>
-
-          <SearchInput />
-
+          <Suspense fallback={<div>Loading bookings...</div>}>
+            <SearchInput />
+          </Suspense>
           <div className="flex gap-4 items-center">
             <div>
               <ModeToggle />
