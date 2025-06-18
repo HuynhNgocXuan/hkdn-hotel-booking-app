@@ -2,19 +2,17 @@ import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
-type RouteContext = {
-  params: {
-    Id: string;
-  };
-};
 
 // ✅ PATCH: Cập nhật trạng thái thanh toán
-export async function PATCH(req: NextRequest, { params }: RouteContext) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ Id: string }> }
+) {
   try {
     const { userId } = await auth();
     if (!userId) return new NextResponse("Unauthorized", { status: 401 });
 
-    const { Id } = params;
+    const { Id } = await params;
     if (!Id)
       return new NextResponse("Payment Intent ID is required", { status: 400 });
 
@@ -26,20 +24,23 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
     return NextResponse.json(updatedBooking, { status: 200 });
   } catch (error) {
     console.error("[BOOKING_PATCH_ERROR]", error);
-    return NextResponse.json(
-      { message: error },
-      { status: 500 }
-    );
+
+    return NextResponse.json({ message: error }, { status: 500 });
+
+  
   }
 }
 
 // ✅ DELETE: Xóa booking theo ID
-export async function DELETE(req: NextRequest, { params }: RouteContext) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ Id: string }> }
+) {
   try {
     const { userId } = await auth();
     if (!userId) return new NextResponse("Unauthorized", { status: 401 });
 
-    const { Id } = params;
+    const { Id } = await params;
     if (!Id) return new NextResponse("Booking ID is required", { status: 400 });
 
     const deletedBooking = await prismadb.booking.delete({
@@ -54,12 +55,15 @@ export async function DELETE(req: NextRequest, { params }: RouteContext) {
 }
 
 // ✅ GET: Lấy danh sách booking của 1 phòng (roomId)
-export async function GET(req: NextRequest, { params }: RouteContext) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ Id: string }> }
+) {
   try {
     const { userId } = await auth();
     if (!userId) return new NextResponse("Unauthorized", { status: 401 });
 
-    const { Id } = params;
+    const { Id } = await params;
     if (!Id) return new NextResponse("Room ID is required", { status: 400 });
 
     const yesterday = new Date();

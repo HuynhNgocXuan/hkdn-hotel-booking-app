@@ -10,13 +10,8 @@ interface HomeProps {
   }>;
 }
 
-
 export default async function Home({ searchParams }: HomeProps) {
-  const hotels = await getHotels(Promise.resolve(searchParams));
-
-  return (
-    <div>
-      <HotelList hotels={hotels} />
-    </div>
-  );
+  const params = await searchParams; // unwrap promise
+  const hotels = await getHotels(params);
+  return <HotelList hotels={hotels} />;
 }
