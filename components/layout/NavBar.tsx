@@ -7,7 +7,7 @@ import { Button } from "../ui/button";
 import SearchInput from "../SearchInput";
 import { ModeToggle } from "../theme-toggle";
 import { NavMenu } from "./NavMenu";
-
+import { Suspense } from "react";
 
 const NavBar = () => {
   const router = useRouter();
