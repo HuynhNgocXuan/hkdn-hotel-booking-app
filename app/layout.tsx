@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Container from "@/components/Container";
 import { Toaster } from "@/components/ui/sonner";
 import LocationFilterClient from "@/components/LocationFilterClient";
+import Footer from "@/components/layout/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,6 +48,7 @@ export default function RootLayout({
               <section className="flex-grow">
                 <Container> {children}</Container>
               </section>
+              <Footer />
             </main>
             <Toaster />
           </ThemeProvider>
