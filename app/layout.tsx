@@ -8,6 +8,7 @@ import Container from "@/components/Container";
 import { Toaster } from "@/components/ui/sonner";
 import LocationFilterClient from "@/components/LocationFilterClient";
 import Footer from "@/components/layout/Footer";
+import { Analytics } from "@vercel/analytics/next"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,6 +53,7 @@ export default function RootLayout({
             </main>
             <Toaster />
           </ThemeProvider>
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>
