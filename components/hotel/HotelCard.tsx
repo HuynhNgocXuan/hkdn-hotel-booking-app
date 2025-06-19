@@ -37,9 +37,11 @@ const HotelCard = ({ hotel }: { hotel: HotelWithRooms }) => {
           />
         </div>
         <div className="flex-1 flex flex-col justify-between h-[210px] gap-1 p-1 py-2 text-sm">
-          <h3 className="font-semibold text-xl">{hotel.title}</h3>
-          <div className="text-primary/90">
-            {hotel.description.substring(0, 45)}...
+          <h3 className="font-semibold text-xl line-clamp-2 overflow-hidden text-ellipsis transition-all duration-300 ease-in-out group-hover:line-clamp-none group-hover:overflow-visible group-hover:whitespace-normal">
+            {hotel.title}
+          </h3>
+          <div className="text-primary/90 line-clamp-2 overflow-hidden text-ellipsis transition-all duration-300 ease-in-out group-hover:line-clamp-none group-hover:overflow-visible group-hover:whitespace-normal">
+            {hotel.description}
           </div>
           <div className="text-primary/90">
             <AmenityItem>
@@ -48,7 +50,7 @@ const HotelCard = ({ hotel }: { hotel: HotelWithRooms }) => {
             </AmenityItem>
             {hotel.swimmingPool && (
               <AmenityItem>
-                <FontAwesomeIcon  icon={faPersonSwimming} />
+                <FontAwesomeIcon icon={faPersonSwimming} />
                 Pool
               </AmenityItem>
             )}
@@ -70,7 +72,14 @@ const HotelCard = ({ hotel }: { hotel: HotelWithRooms }) => {
                 </>
               )}
             </div>
-            {isMyHotels && <Button onClick={() => router.push(`/hotel/${hotel.id}`)} variant="outline">Edit</Button>}
+            {isMyHotels && (
+              <Button
+                onClick={() => router.push(`/hotel/${hotel.id}`)}
+                variant="outline"
+              >
+                Edit
+              </Button>
+            )}
           </div>
         </div>
       </div>
