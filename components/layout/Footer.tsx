@@ -72,16 +72,16 @@ const Footer = () => {
         </div>
         <div>
           <h3 className="mb-4 text-xl font-semibold">FOLLOWING</h3>
-          <div className="text-sm">
-            <a href="#" className="mb-2 block flex items-center">
+          <div className="text-sm flex flex-col">
+            <a href="#" className="mb-2 items-center">
               <FontAwesomeIcon className="mr-2 text-lg" icon={faFacebook} />
               Facebook
             </a>
-            <a href="#" className="mb-2 block flex items-center">
+            <a href="#" className="mb-2 items-center">
               <FontAwesomeIcon className="mr-2 text-lg" icon={faInstagram} />
               Instagram
             </a>
-            <a href="#" className="mb-2 block flex items-center">
+            <a href="#" className="mb-2 items-center">
               <FontAwesomeIcon className="mr-2 text-lg" icon={faTiktok} />
               Tiktok
             </a>
