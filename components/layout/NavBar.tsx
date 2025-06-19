@@ -31,7 +31,7 @@ const NavBar = () => {
             <div className="text-lg font-bold ">BOOKING HOTEL</div>
           </div>
           <Suspense fallback={<div>Loading bookings...</div>}>
-          <SearchInput />
+            <SearchInput />
           </Suspense>
           <div className="flex gap-4 items-center">
             <div>
