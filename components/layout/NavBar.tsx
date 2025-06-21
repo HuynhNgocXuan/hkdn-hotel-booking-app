@@ -22,18 +22,18 @@ const NavBar = () => {
             onClick={() => router.push("/")}
           >
             <Image
-              className="rounded-full mr-4"
+              className="rounded-full mr-4 hidden sm:block"
               src="/logo.png"
               alt="Logo"
               width="50"
               height="50"
             />
-            <div className="text-lg font-bold ">BOOKING HOTEL</div>
+            <div className="text-sm md:text-lg md:font-bold">BOOKING HOTEL</div>
           </div>
           <Suspense fallback={<div>Loading bookings...</div>}>
-          <SearchInput />
+            <SearchInput />
           </Suspense>
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-2 items-center">
             <div>
               <ModeToggle />
             </div>
