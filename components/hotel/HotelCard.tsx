@@ -45,7 +45,7 @@ const HotelCard = ({ hotel }: { hotel: HotelWithRooms }) => {
           </div>
           <div className="text-primary/90">
             <AmenityItem>
-              <MapPin className="w-4 h-4 line-clamp-2 overflow-hidden text-ellipsis transition-all duration-300 ease-in-out group-hover:line-clamp-none group-hover:overflow-visible group-hover:whitespace-normal" />
+              <MapPin className="w-4 h-4 line-clamp-1 overflow-hidden text-ellipsis transition-all duration-300 ease-in-out group-hover:line-clamp-none group-hover:overflow-visible group-hover:whitespace-normal" />
               {country?.name}, {hotel.city}
             </AmenityItem>
             {hotel.swimmingPool && (
