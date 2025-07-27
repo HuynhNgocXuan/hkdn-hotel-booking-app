@@ -29,7 +29,8 @@ const LocationFilter = () => {
   const countries = getAllCountries();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const pathname = usePathname();
+ const pathname = usePathname();
+ 
 
   useEffect(() => {
     const countryStates = getCountryStates(country);
@@ -105,7 +106,7 @@ const LocationFilter = () => {
 
   if (pathname !== "/") return null;  
 
-  const pathname = usePathname();
+ 
   if (pathname !== "/") return null; 
   
   return (
