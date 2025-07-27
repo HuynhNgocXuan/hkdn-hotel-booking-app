@@ -14,8 +14,11 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import queryString from "query-string";
 import { ICity, IState } from "country-state-city";
 import { Button } from "./ui/button";
+import { usePathname } from "next/navigation";
+
 
 const LocationFilter = () => {
+  
   const [country, setCountry] = useState("");
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
@@ -102,6 +105,9 @@ const LocationFilter = () => {
 
   if (pathname !== "/") return null;  
 
+  const pathname = usePathname();
+  if (pathname !== "/") return null; 
+  
   return (
     <Container>
       <div className="flex gap-2 md:gap-4 items-center justify-center text-sm">

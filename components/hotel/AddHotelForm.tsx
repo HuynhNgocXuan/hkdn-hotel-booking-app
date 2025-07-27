@@ -53,6 +53,7 @@ import {
 import AddRoomForm from "../room/AddRoomForm";
 import Image from "next/image";
 import RoomCard from "../room/RoomCard";
+import MapboxPicker from "../MapboxPicker";
 
 interface AddHotelFormProps {
   hotel: HotelWithRooms | null;
@@ -77,6 +78,11 @@ const formSchema = z.object({
   }),
   state: z.string().optional(),
   city: z.string().optional(),
+  address: z.string().min(3, {
+    message: "Address must be at least 3 characters long",
+  }),
+  latitude: z.number(),
+  longitude: z.number(),
   locationDescription: z.string().min(10, {
     message: "Location description must be at least 10 characters long",
   }),
@@ -142,6 +148,12 @@ const items = [
         placeholder: "Select a city",
       },
       {
+        name: "address",
+        label: "Address Detail",
+        description: "Enter the address detail of your hotel",
+        placeholder: "Ví dụ: 138A Nguyễn Đình Chiểu, Q.3, TP.HCM",
+      },
+      {
         name: "locationDescription",
         label: "Location Description",
         placeholder: "Describe the location of your hotel",
@@ -165,27 +177,36 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: hotel || {
-      title: "",
-      description: "",
-      image: "",
-      country: "",
-      state: "",
-      city: "",
-      locationDescription: "",
-      gym: false,
-      spa: false,
-      bar: false,
-      laundry: false,
-      restaurant: false,
-      shopping: false,
-      freeParking: false,
-      bikeRental: false,
-      freeWifi: false,
-      movieNights: false,
-      swimmingPool: false,
-      coffeeShop: false,
-    },
+    defaultValues: hotel
+      ? {
+          ...hotel,
+          latitude: hotel.latitude ?? 0,
+          longitude: hotel.longitude ?? 0,
+        }
+      : {
+          title: "",
+          description: "",
+          image: "",
+          country: "",
+          state: "",
+          city: "",
+          address: "",
+          longitude: 0,
+          latitude: 0,
+          locationDescription: "",
+          gym: false,
+          spa: false,
+          bar: false,
+          laundry: false,
+          restaurant: false,
+          shopping: false,
+          freeParking: false,
+          bikeRental: false,
+          freeWifi: false,
+          movieNights: false,
+          swimmingPool: false,
+          coffeeShop: false,
+        },
   });
 
   useEffect(() => {
@@ -316,7 +337,13 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                       <FormLabel>{item.label}</FormLabel>
                       <FormControl>
                         {item.name === "title" ? (
-                          <Input placeholder={item.placeholder} {...field} />
+                          <Input
+                            placeholder={item.placeholder}
+                            {...field}
+                            value={
+                              typeof field.value === "string" ? field.value : ""
+                            }
+                          />
                         ) : (
                           <Textarea placeholder={item.placeholder} {...field} />
                         )}
@@ -368,22 +395,25 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                     <FormControl>
                       {image ? (
                         <>
-                          <div className="relative max-w-[400px] min-w-[200px] max-h-[400px] min-h-[200px] mt-4">
+                          <div className="relative w-full max-w-[400px] min-w-[200px] aspect-square mt-4 rounded-lg overflow-hidden shadow-md">
                             <Image
-                              fill
                               src={image}
                               alt="Hotel Image"
-                              className="object-contain overflow-hidden rounded-lg"
+                              fill
+                              className="object-cover transition duration-300 ease-in-out hover:scale-105"
                             />
-
                             <Button
-                              className="absolute right-[52px] top-[-25px]"
+                              className="absolute right-2 top-2 bg-white/80 hover:bg-white text-red-500"
                               onClick={() => handleImageDelete(image)}
                               size="icon"
                               type="button"
                               variant="ghost"
                             >
-                              {imageIsDeleting ? <Loader2 /> : <XCircle />}
+                              {imageIsDeleting ? (
+                                <Loader2 className="animate-spin" />
+                              ) : (
+                                <XCircle />
+                              )}
                             </Button>
                           </div>
                         </>
@@ -506,6 +536,16 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                                 ))}
                               </SelectContent>
                             </Select>
+                          ) : item.name === "address" ? (
+                            <Input
+                              placeholder={item.placeholder}
+                              {...field}
+                              value={
+                                typeof field.value === "string"
+                                  ? field.value
+                                  : ""
+                              }
+                            />
                           ) : (
                             <Textarea
                               placeholder={item.placeholder}
@@ -524,6 +564,14 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                   />
                 ))}
               </div>
+
+              <MapboxPicker
+                address={form.watch("address")}
+                onLocationSelect={(lat, lng) => {
+                  form.setValue("latitude", lat);
+                  form.setValue("longitude", lng);
+                }}
+              />
 
               {hotel && !hotel.rooms.length && (
                 <Alert className="text-white bg-indigo-400">

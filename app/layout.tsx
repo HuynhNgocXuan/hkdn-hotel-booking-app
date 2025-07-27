@@ -6,9 +6,11 @@ import NavBar from "@/components/layout/NavBar";
 import { ThemeProvider } from "@/components/theme-provider";
 import Container from "@/components/Container";
 import { Toaster } from "@/components/ui/sonner";
-import LocationFilterClient from "@/components/LocationFilterClient";
+import LocationFilter from "@/components/LocationFilter";
+import "mapbox-gl/dist/mapbox-gl.css";
 import Footer from "@/components/layout/Footer";
 import { Analytics } from "@vercel/analytics/next"
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
