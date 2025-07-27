@@ -1,23 +1,29 @@
-import prismadb from "@/lib/prismadb";
+import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import prismadb from "@/lib/prismadb";
 
+// PATCH: Cập nhật thông tin phòng
 export async function PATCH(
-  req: Request,
-  { params }: { params: { roomId: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ roomId: string }> }
 ) {
-  try { 
-    const body = await req.json();
+  try {
+    const { roomId } = await params;
     const { userId } = await auth();
 
-    if (!userId) return new NextResponse("Unauthorized", { status: 401 });
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
 
-    if (!params.roomId)
+    if (!roomId) {
       return new NextResponse("Room ID is required", { status: 400 });
+    }
+
+    const body = await req.json();
 
     const updatedRoom = await prismadb.room.update({
       where: {
-        id: params.roomId,
+        id: roomId,
       },
       data: {
         ...body,
@@ -26,29 +32,37 @@ export async function PATCH(
 
     return NextResponse.json(updatedRoom, { status: 200 });
   } catch (error) {
-    console.error("Error in PATCH api/room:", error);
+    console.error("[ROOM_PATCH]", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: { roomId: string } }) {
+// DELETE: Xoá phòng
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ roomId: string }> }
+) {
   try {
+    const { roomId } = await params;
     const { userId } = await auth();
 
-    if (!userId) return new NextResponse("Unauthorized", { status: 401 });
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
 
-    if (!params.roomId)
+    if (!roomId) {
       return new NextResponse("Room ID is required", { status: 400 });
+    }
 
     const deletedRoom = await prismadb.room.delete({
       where: {
-        id: params.roomId,
+        id: roomId,
       },
     });
 
-    return NextResponse.json(deletedRoom, { status: 201 });
+    return NextResponse.json(deletedRoom, { status: 200 });
   } catch (error) {
-    console.error("Error in DELETE api/room:", error);
+    console.error("[ROOM_DELETE]", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

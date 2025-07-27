@@ -152,7 +152,7 @@ const AddRoomForm = ({ hotel, room, handleDialogueOpen }: AddRoomFormProps) => {
       if (!hotel) return;
       axios
         .post("/api/room", {...values, hotelId: hotel.id })
-        .then((res) => {
+        .then(() => {
           setIsLoading(false);
           toast.success("Room created successfully");
           router.refresh();

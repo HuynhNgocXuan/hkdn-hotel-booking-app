@@ -8,6 +8,8 @@ import Container from "@/components/Container";
 import { Toaster } from "@/components/ui/sonner";
 import LocationFilter from "@/components/LocationFilter";
 import "mapbox-gl/dist/mapbox-gl.css";
+import Footer from "@/components/layout/Footer";
+import { Analytics } from "@vercel/analytics/next"
 
 
 const geistSans = Geist({
@@ -45,13 +47,15 @@ export default function RootLayout({
           >
             <main className="flex flex-col min-h-screen bg-secondary">
               <NavBar />
-              <LocationFilter />
+              <LocationFilterClient />
               <section className="flex-grow">
                 <Container> {children}</Container>
               </section>
+              <Footer />
             </main>
             <Toaster />
           </ThemeProvider>
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>

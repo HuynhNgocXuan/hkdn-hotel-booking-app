@@ -74,6 +74,7 @@ npm prisma db push
 
 ### Launch
 
+### Installation
 ```bash
 npm runrun dev
 ```
@@ -106,4 +107,59 @@ npm runrun dev
 * Demo: [https://hkdn-hotel-booking-app.vercel.app](https://hkdn-hotel-booking-app.vercel.app)
 ---
 
+git clone https://github.com/HuynhNgocXuan/hkdn-hotel-booking-app.git
+cd hkdn-hotel-booking-app
+pnpm install   # hoặc npm install / yarn install
+````
+
+### Thiết lập biến môi trường
+
+Tạo `.env` với nội dung:
+
+```env
+DATABASE_URL="mysql://<user>:<pass>@<host>/<db>?sslaccept=strict"
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="..."
+CLERK_SECRET_KEY="..."
+STRIPE_SECRET_KEY="..."
+```
+
+### Migrate database
+
+```bash
+npm prisma db push
+```
+
+### Launch
+
+```bash
+npm runrun dev
+```
+
+---
+
+## Usage
+
+* Thử nghiệm qua các route:
+
+  * `http://localhost:3000/`
+  * `/hotels`, `/my-bookings`, `/my-hotels`
+* Các thao tác: đăng ký/đăng nhập (Clerk), CRUD khách sạn/phòng, tìm kiếm, chọn ngày, tạo booking & thanh toán Stripe, quản lý lịch sử
+---
+
+## Contributing
+
+1. Fork → Tạo issue/feature
+2. Tạo PR đến nhánh `main`
+3. Tuân thủ code style (eslint/prettier)
+4. Thêm test / update docs nếu cần
+
+---
+
+## Contact
+
+**Huynh Ngoc Xuan**
+
+* GitHub: [https://github.com/HuynhNgocXuan](https://github.com/HuynhNgocXuan)
+* Demo: [https://hkdn-hotel-booking-app.vercel.app](https://hkdn-hotel-booking-app.vercel.app)
+---
 

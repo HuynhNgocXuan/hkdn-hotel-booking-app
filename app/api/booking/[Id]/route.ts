@@ -1,88 +1,85 @@
 import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
+
+// ✅ PATCH: Cập nhật trạng thái thanh toán
 export async function PATCH(
-  req: Request,
-  { params }: { params: { Id: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ Id: string }> }
 ) {
   try {
     const { userId } = await auth();
-
     if (!userId) return new NextResponse("Unauthorized", { status: 401 });
 
-    if (!params.Id)
+    const { Id } = await params;
+    if (!Id)
       return new NextResponse("Payment Intent ID is required", { status: 400 });
 
-    const updateBooking = await prismadb.booking.update({
-      where: {
-        paymentIntentId: params.Id,
-      },
-      data: {
-        paymentStatus: true,
-      },
+    const updatedBooking = await prismadb.booking.update({
+      where: { paymentIntentId: Id },
+      data: { paymentStatus: true },
     });
 
-    return NextResponse.json(updateBooking, { status: 200 });
+    return NextResponse.json(updatedBooking, { status: 200 });
   } catch (error) {
-    console.error("Error in PATCH api/booking/Id:", error);
-    return NextResponse.json(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      { message: (error as any).message },
-      { status: 500 }
-    );
+    console.error("[BOOKING_PATCH_ERROR]", error);
+
+    return NextResponse.json({ message: error }, { status: 500 });
+
+  
   }
 }
 
+// ✅ DELETE: Xóa booking theo ID
 export async function DELETE(
-  req: Request,
-  { params }: { params: { Id: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ Id: string }> }
 ) {
   try {
     const { userId } = await auth();
-
     if (!userId) return new NextResponse("Unauthorized", { status: 401 });
 
-    if (!params.Id)
-      return new NextResponse("Booking ID is required", { status: 400 });
+    const { Id } = await params;
+    if (!Id) return new NextResponse("Booking ID is required", { status: 400 });
 
     const deletedBooking = await prismadb.booking.delete({
-      where: {
-        id: params.Id,
-      },
+      where: { id: Id },
     });
 
-    return NextResponse.json(deletedBooking, { status: 201 });
+    return NextResponse.json(deletedBooking, { status: 200 });
   } catch (error) {
-    console.error("Error in DELETE api/booking/Id:", error);
+    console.error("[BOOKING_DELETE_ERROR]", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
+
+// ✅ GET: Lấy danh sách booking của 1 phòng (roomId)
 export async function GET(
-  req: Request,
-  { params }: { params: { Id: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ Id: string }> }
 ) {
   try {
     const { userId } = await auth();
-
     if (!userId) return new NextResponse("Unauthorized", { status: 401 });
 
-    if (!params.Id)
-      return new NextResponse("Hotel ID is required", { status: 400 });
+    const { Id } = await params;
+    if (!Id) return new NextResponse("Room ID is required", { status: 400 });
 
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
+
     const bookings = await prismadb.booking.findMany({
       where: {
         paymentStatus: true,
-        roomId: params.Id,
+        roomId: Id,
         endDate: { gt: yesterday },
       },
     });
 
-    return NextResponse.json(bookings, { status: 201 });
+    return NextResponse.json(bookings, { status: 200 });
   } catch (error) {
-    console.error("Error in GET api/booking/Id:", error);
+    console.error("[BOOKING_GET_ERROR]", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
