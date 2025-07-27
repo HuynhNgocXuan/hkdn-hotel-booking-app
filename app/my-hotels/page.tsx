@@ -16,4 +16,6 @@ const MyHotel = async () => {
   );
 };
 
+export const dynamic = "force-dynamic";
+
 export default MyHotel;

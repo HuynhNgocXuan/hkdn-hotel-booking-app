@@ -3,12 +3,12 @@ import AddHotelForm from "@/components/hotel/AddHotelForm";
 import { auth } from "@clerk/nextjs/server";
 
 interface HotelPageProps {
-  params: {
+  params: Promise<{
     hotelId: string;
-  };
+  }>;
 }
 const Hotel = async ({ params }: HotelPageProps) => {
-  const { hotelId } =  params;
+  const { hotelId } = await params;
   const hotel = await getHotelById(hotelId);
   const { userId } = await auth();
 
@@ -23,4 +23,3 @@ const Hotel = async ({ params }: HotelPageProps) => {
 };
 
 export default Hotel;
-

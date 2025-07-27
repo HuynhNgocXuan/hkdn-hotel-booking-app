@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import SearchInput from "../SearchInput";
 import { ModeToggle } from "../theme-toggle";
 import { NavMenu } from "./NavMenu";
+import { Suspense } from "react";
 
 const NavBar = () => {
   const router = useRouter();
@@ -21,18 +22,18 @@ const NavBar = () => {
             onClick={() => router.push("/")}
           >
             <Image
-              className="rounded-full mr-4"
+              className="rounded-full mr-4 hidden sm:block"
               src="/logo.png"
               alt="Logo"
               width="50"
               height="50"
             />
-            <div className="text-lg font-bold ">BOOKING HOTEL</div>
+            <div className="text-sm md:text-lg md:font-bold">BOOKING HOTEL</div>
           </div>
-
-          <SearchInput />
-
-          <div className="flex gap-4 items-center">
+          <Suspense fallback={<div>Loading bookings...</div>}>
+            <SearchInput />
+          </Suspense>
+          <div className="flex gap-2 items-center">
             <div>
               <ModeToggle />
             </div>

@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import useLocation from "@/hooks/useLocation";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import queryString from "query-string";
 import { ICity, IState } from "country-state-city";
 import { Button } from "./ui/button";
@@ -29,6 +29,7 @@ const LocationFilter = () => {
   const countries = getAllCountries();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   useEffect(() => {
     const countryStates = getCountryStates(country);
@@ -95,13 +96,14 @@ const LocationFilter = () => {
     router.push(url);
   }, [country, state, city]);
 
-
   const handleClearFilters = () => {
     router.push("/");
     setCountry("");
     setState("");
     setCity("");
-  }
+  };
+
+  if (pathname !== "/") return null;  
 
   const pathname = usePathname();
   if (pathname !== "/") return null; 
@@ -163,7 +165,9 @@ const LocationFilter = () => {
             </SelectContent>
           </Select>
         </div>
-        <Button variant={"outline"} onClick={() => handleClearFilters()}>Clear Filters</Button>
+        <Button variant={"outline"} onClick={() => handleClearFilters()}>
+          Clear Filters
+        </Button>
       </div>
     </Container>
   );
