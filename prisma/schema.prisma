@@ -20,6 +20,9 @@ model Hotel {
   country             String
   state               String
   city                String
+  address             String    @db.Text      
+  latitude            Float     @default(0)            
+  longitude           Float     @default(0)
   locationDescription String    @db.LongText
   
   gym                 Boolean   @default(false)

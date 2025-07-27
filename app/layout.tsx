@@ -7,6 +7,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Container from "@/components/Container";
 import { Toaster } from "@/components/ui/sonner";
 import LocationFilter from "@/components/LocationFilter";
+import "mapbox-gl/dist/mapbox-gl.css";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

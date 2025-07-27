@@ -19,6 +19,9 @@ import useLocation from "@/hooks/useLocation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPersonSwimming, faSpa } from "@fortawesome/free-solid-svg-icons";
 import RoomCard from "../room/RoomCard";
+import { useState } from "react";
+import { Button } from "../ui/button";
+import MapModal from "../MapModal";
 
 const HotelDetailsClient = ({
   hotel,
@@ -30,6 +33,7 @@ const HotelDetailsClient = ({
   const { getCountryByCode, getStateByCode } = useLocation();
   const country = getCountryByCode(hotel.country);
   const state = getStateByCode(hotel.country, hotel.state);
+  const [openMap, setOpenMap] = useState(false);
 
   const amenities = [
     {
@@ -81,11 +85,15 @@ const HotelDetailsClient = ({
   ];
 
   return (
-    <div className="flex flex-col gap-6 pb-2 ">
-      <div
-        className="aspect-square h-[200px] overflow-hidden relative w-full md:h-[400px] rounded-lg
-        "
-      >
+    <div className="flex flex-col gap-4 pb-2">
+      <h3 className="font-semibold text-xl md:text-3xl">{hotel.title}</h3>
+      <div className="font-semibold ">
+        <AmenityItem>
+          <MapPin className="h-4 w-4" />
+          {hotel.address}, {state?.name}, {country?.name}
+        </AmenityItem>
+      </div>
+      <div className="relative w-[400px] h-[300px] rounded-lg overflow-hidden">
         <Image
           src={hotel.image}
           alt={hotel.title}
@@ -93,15 +101,20 @@ const HotelDetailsClient = ({
           className="object-cover"
         />
       </div>
-      <div>
-        <h3 className="font-semibold text-xl md:text-3xl">{hotel.title}</h3>
-        <div className="font-semibold mt-4">
-          <AmenityItem>
-            <MapPin className="h-4 w-4" />
-            {country?.name}, {state?.name}, {hotel.city}
-          </AmenityItem>
-        </div>
 
+      <div>
+        <Button variant="outline" onClick={() => setOpenMap(true)}>
+           View on Map
+        </Button>
+        <MapModal
+          open={openMap}
+          onOpenChange={setOpenMap}
+          latitude={hotel.latitude}
+          longitude={hotel.longitude}
+        />
+      </div>
+
+      <div>
         <h3 className="font-semibold text-lg mt-4 mb-2">Location Details</h3>
         <p className="text-primary/90 mb-2">{hotel.locationDescription}</p>
 
@@ -128,7 +141,7 @@ const HotelDetailsClient = ({
               <RoomCard
                 key={room.id}
                 hotel={hotel}
-                room={room} 
+                room={room}
                 bookings={bookings}
               />
             ))}
