@@ -14,7 +14,6 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import queryString from "query-string";
 import { ICity, IState } from "country-state-city";
 import { Button } from "./ui/button";
-import { usePathname } from "next/navigation";
 
 
 const LocationFilter = () => {
@@ -105,9 +104,6 @@ const LocationFilter = () => {
   };
 
   if (pathname !== "/") return null;  
-
- 
-  if (pathname !== "/") return null; 
   
   return (
     <Container>
