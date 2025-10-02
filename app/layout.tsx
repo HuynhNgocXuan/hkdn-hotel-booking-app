@@ -8,9 +8,8 @@ import Container from "@/components/Container";
 import { Toaster } from "@/components/ui/sonner";
 import "mapbox-gl/dist/mapbox-gl.css";
 import Footer from "@/components/layout/Footer";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/next";
 import LocationFilterClient from "@/components/LocationFilterClient";
-
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,6 +45,21 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <main className="flex flex-col min-h-screen bg-secondary">
+              <script
+                dangerouslySetInnerHTML={{
+                  __html: `
+      var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+      (function(){
+        var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+        s1.async=true;
+        s1.src='https://embed.tawk.to/68de6165243dae1952fee027/1j6iaot80';
+        s1.charset='UTF-8';
+        s1.setAttribute('crossorigin','*');
+        s0.parentNode.insertBefore(s1,s0);
+      })();
+    `,
+                }}
+              />
               <NavBar />
               <LocationFilterClient />
               <section className="flex-grow">
